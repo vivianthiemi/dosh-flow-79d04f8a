@@ -13,6 +13,7 @@ import InfoField from "@/components/InfoField";
 import SupplierCard from "@/components/SupplierCard";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import globoxLogo from "@/assets/globox-logo.png";
 
 const companyData = {
   nomeFantasia: "GLOBOX COSMÉTICOS",
