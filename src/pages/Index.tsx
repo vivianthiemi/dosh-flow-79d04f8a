@@ -109,7 +109,6 @@ const Index = () => {
           <div className="space-y-3">
             {[
               { label: "E-mail Comercial", value: companyData.emailComercial, hint: "" },
-              { label: "E-mail Nota Fiscal (DANFE + XML)", value: companyData.emailNfe, hint: "Enviar cópia da DANFE em PDF e XML" },
               { label: "E-mail Financeiro (DANFE + Boleto)", value: companyData.emailFinanceiro, hint: "Enviar cópia da DANFE em PDF e Boleto" },
             ].map((item) => (
               <div
