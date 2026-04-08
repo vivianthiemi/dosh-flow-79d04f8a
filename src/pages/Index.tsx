@@ -190,8 +190,8 @@ const Index = () => {
           </SectionCard>
         </div>
 
-        {/* Fornecedores / Representantes */}
-        <SectionCard title="Representantes / Fornecedores" icon={<Users className="h-4 w-4" />}>
+        {/* Referência Comercial */}
+        <SectionCard title="Referência Comercial" icon={<Users className="h-4 w-4" />}>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {suppliers.map((s) => (
               <SupplierCard key={s.name} {...s} />
