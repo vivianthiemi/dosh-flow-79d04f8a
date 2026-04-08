@@ -77,9 +77,6 @@ const Index = () => {
                 </p>
               </div>
             </div>
-            <Badge className="bg-accent text-accent-foreground hover:bg-accent/90">
-              Ativa
-            </Badge>
           </div>
         </div>
       </header>
