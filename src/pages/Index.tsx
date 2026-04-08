@@ -13,6 +13,7 @@ import InfoField from "@/components/InfoField";
 import SupplierCard from "@/components/SupplierCard";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import globoxLogo from "@/assets/globox-logo.png";
 
 const companyData = {
   nomeFantasia: "GLOBOX COSMÉTICOS",
@@ -65,13 +66,16 @@ const Index = () => {
       <header className="border-b border-border bg-card">
         <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                {companyData.nomeFantasia}
-              </h1>
-              <p className="mt-0.5 text-sm text-muted-foreground">
-                {companyData.razaoSocial}
-              </p>
+            <div className="flex items-center gap-4">
+              <img src={globoxLogo} alt="Globox Cosméticos" className="h-14 w-auto" />
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                  {companyData.nomeFantasia}
+                </h1>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {companyData.razaoSocial}
+                </p>
+              </div>
             </div>
             <Badge className="bg-accent text-accent-foreground hover:bg-accent/90">
               Ativa
