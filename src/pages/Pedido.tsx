@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
 import globoxLogo from "@/assets/globox-logo.png";
-import globoxLogo from "@/assets/globox-logo.png";
 
 const orderData = {
   numero: "#1000",
@@ -35,8 +34,15 @@ const orderData = {
 const company = {
   nome: "Globox Cosmeticos Ltda",
   cnpj: "64.795.585/0001-66",
-  telefone: "18 - 99150-7249",
   endereco: "Antonio Martins De Barros, 72, Chacara Palestina, Penapolis, SP",
+};
+
+const enderecoEntrega = {
+  rua: "Rua Exemplo, 123",
+  bairro: "Centro",
+  cidade: "Penápolis",
+  estado: "SP",
+  cep: "16300-000",
 };
 
 const items = [
