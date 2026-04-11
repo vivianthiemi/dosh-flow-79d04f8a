@@ -77,6 +77,11 @@ const totalItens = items.length;
 const totalQtd = items.reduce((s, i) => s + i.qtd, 0);
 const totalProdutos = items.reduce((s, i) => s + i.valorTotal, 0);
 
+const desconto = 10.0;
+const acrescimo = 0.5;
+const frete = 20.0;
+const totalPedido = totalProdutos - desconto + acrescimo + frete;
+
 const formatCurrency = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
