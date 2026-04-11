@@ -85,25 +85,17 @@ const Pedido = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src={globoxLogo} alt="Globox" className="h-16 w-auto" />
+        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <img src={globoxLogo} alt="Globox" className="h-20 w-auto" />
             <div>
-              <p className="text-sm font-medium text-foreground">{company.nome}</p>
-              <p className="text-xs text-muted-foreground">CNPJ: {company.cnpj}</p>
-              <p className="text-xs text-muted-foreground">{company.telefone}</p>
+              <p className="text-lg font-bold text-foreground">{company.nome}</p>
+              <p className="text-sm text-muted-foreground">CNPJ: {company.cnpj}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Link to="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>
-              <Printer className="mr-1 h-4 w-4" /> Imprimir
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={() => window.print()}>
+            <Printer className="mr-1 h-4 w-4" /> Imprimir
+          </Button>
         </div>
       </header>
 
@@ -119,7 +111,6 @@ const Pedido = () => {
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">
                   Pedido {orderData.numero}
                 </h1>
-                <p className="text-sm text-muted-foreground">{company.endereco}</p>
               </div>
             </div>
             <Badge className="w-fit bg-emerald-500/15 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/15 text-sm px-3 py-1">
