@@ -77,6 +77,11 @@ const totalItens = items.length;
 const totalQtd = items.reduce((s, i) => s + i.qtd, 0);
 const totalProdutos = items.reduce((s, i) => s + i.valorTotal, 0);
 
+const desconto = 10.0;
+const acrescimo = 0.5;
+const frete = 20.0;
+const totalPedido = totalProdutos - desconto + acrescimo + frete;
+
 const formatCurrency = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -233,7 +238,7 @@ const Pedido = () => {
                   Nº de itens: <strong>{totalItens}</strong> · Soma das Qtdes:{" "}
                   <strong>{totalQtd}</strong>
                 </TableCell>
-                <TableCell colSpan={2} className="text-right text-sm">
+                <TableCell colSpan={2} className="text-right text-sm font-medium">
                   Total de Produtos
                 </TableCell>
                 <TableCell className="text-right font-semibold">
@@ -241,11 +246,35 @@ const Pedido = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
+                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                  Desconto
+                </TableCell>
+                <TableCell className="text-right text-destructive font-medium">
+                  − {formatCurrency(desconto)}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                  Acréscimo
+                </TableCell>
+                <TableCell className="text-right font-medium">
+                  + {formatCurrency(acrescimo)}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                  Frete (FOB)
+                </TableCell>
+                <TableCell className="text-right font-medium">
+                  + {formatCurrency(frete)}
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell colSpan={6} className="text-right text-sm font-bold">
                   Total do Pedido
                 </TableCell>
                 <TableCell className="text-right text-lg font-bold text-primary">
-                  {formatCurrency(totalProdutos)}
+                  {formatCurrency(totalPedido)}
                 </TableCell>
               </TableRow>
             </TableFooter>
