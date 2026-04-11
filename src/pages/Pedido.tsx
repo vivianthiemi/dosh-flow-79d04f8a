@@ -106,62 +106,52 @@ const Pedido = () => {
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:px-6">
         {/* Pedido Header Card */}
-        <div className="rounded-xl border border-border bg-card shadow-sm p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+          {/* Title row */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-                <FileText className="h-6 w-6 text-primary" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                  Pedido {orderData.numero}
-                </h1>
-              </div>
+              <h1 className="text-xl font-bold tracking-tight text-foreground">
+                Pedido {orderData.numero}
+              </h1>
             </div>
-            <Badge className="w-fit bg-emerald-500/15 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/15 text-sm px-3 py-1">
+            <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/15 text-sm px-3 py-1.5">
               <CheckCircle2 className="mr-1.5 h-4 w-4" />
               {orderData.status}
             </Badge>
           </div>
 
-          <Separator className="my-5" />
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="flex items-start gap-2">
-              <User className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Cliente
-                </p>
-                <p className="text-sm font-medium text-foreground">{orderData.cliente}</p>
+          {/* Info grid */}
+          <div className="grid grid-cols-4 divide-x divide-border">
+            <div className="px-5 py-4">
+              <div className="flex items-center gap-1.5 mb-1">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Cliente</span>
               </div>
+              <p className="text-sm font-semibold text-foreground truncate" title={orderData.cliente}>{orderData.cliente}</p>
             </div>
-            <div className="flex items-start gap-2">
-              <Hash className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Nº do Pedido
-                </p>
-                <p className="text-sm font-medium text-foreground">{orderData.numero}</p>
+            <div className="px-5 py-4">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Hash className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Nº do Pedido</span>
               </div>
+              <p className="text-sm font-semibold text-foreground">{orderData.numero}</p>
             </div>
-            <div className="flex items-start gap-2">
-              <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Data de Emissão
-                </p>
-                <p className="text-sm font-medium text-foreground">{orderData.dataEmissao}</p>
+            <div className="px-5 py-4">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Data de Emissão</span>
               </div>
+              <p className="text-sm font-semibold text-foreground">{orderData.dataEmissao}</p>
             </div>
-            <div className="flex items-start gap-2">
-              <User className="mt-0.5 h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Consultor
-                </p>
-                <p className="text-sm font-medium text-foreground">{orderData.consultor}</p>
+            <div className="px-5 py-4">
+              <div className="flex items-center gap-1.5 mb-1">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Consultor</span>
               </div>
+              <p className="text-sm font-semibold text-foreground">{orderData.consultor}</p>
             </div>
           </div>
         </div>
