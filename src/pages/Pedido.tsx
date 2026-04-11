@@ -6,8 +6,8 @@ import {
   CreditCard,
   FileText,
   CheckCircle2,
-  ArrowLeft,
   Printer,
+  MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
 import globoxLogo from "@/assets/globox-logo.png";
 
 const orderData = {
@@ -35,8 +34,15 @@ const orderData = {
 const company = {
   nome: "Globox Cosmeticos Ltda",
   cnpj: "64.795.585/0001-66",
-  telefone: "18 - 99150-7249",
   endereco: "Antonio Martins De Barros, 72, Chacara Palestina, Penapolis, SP",
+};
+
+const enderecoEntrega = {
+  rua: "Rua Exemplo, 123",
+  bairro: "Centro",
+  cidade: "Penápolis",
+  estado: "SP",
+  cep: "16300-000",
 };
 
 const items = [
@@ -79,25 +85,17 @@ const Pedido = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="mx-auto max-w-5xl px-4 py-4 sm:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img src={globoxLogo} alt="Globox" className="h-16 w-auto" />
+        <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <img src={globoxLogo} alt="Globox" className="h-20 w-auto" />
             <div>
-              <p className="text-sm font-medium text-foreground">{company.nome}</p>
-              <p className="text-xs text-muted-foreground">CNPJ: {company.cnpj}</p>
-              <p className="text-xs text-muted-foreground">{company.telefone}</p>
+              <p className="text-lg font-bold text-foreground">{company.nome}</p>
+              <p className="text-sm text-muted-foreground">CNPJ: {company.cnpj}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Link to="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-1 h-4 w-4" /> Voltar
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>
-              <Printer className="mr-1 h-4 w-4" /> Imprimir
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={() => window.print()}>
+            <Printer className="mr-1 h-4 w-4" /> Imprimir
+          </Button>
         </div>
       </header>
 
@@ -113,7 +111,6 @@ const Pedido = () => {
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">
                   Pedido {orderData.numero}
                 </h1>
-                <p className="text-sm text-muted-foreground">{company.endereco}</p>
               </div>
             </div>
             <Badge className="w-fit bg-emerald-500/15 text-emerald-600 border-emerald-500/30 hover:bg-emerald-500/15 text-sm px-3 py-1">
@@ -164,7 +161,36 @@ const Pedido = () => {
           </div>
         </div>
 
-        {/* Itens do Pedido */}
+        {/* Endereço de Entrega */}
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
+            <MapPin className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+              Endereço de Entrega
+            </h2>
+          </div>
+          <div className="p-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Rua</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.rua}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Bairro</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.bairro}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Cidade / UF</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.cidade} - {enderecoEntrega.estado}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">CEP</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.cep}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
             <Package className="h-4 w-4 text-primary" />
