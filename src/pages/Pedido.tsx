@@ -21,7 +21,7 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import globoxLogo from "@/assets/globox-logo.png";
 import globoxLogo from "@/assets/globox-logo.png";
 
 const orderData = {
