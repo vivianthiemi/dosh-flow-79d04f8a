@@ -161,7 +161,36 @@ const Pedido = () => {
           </div>
         </div>
 
-        {/* Itens do Pedido */}
+        {/* Endereço de Entrega */}
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
+            <MapPin className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+              Endereço de Entrega
+            </h2>
+          </div>
+          <div className="p-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Rua</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.rua}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Bairro</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.bairro}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Cidade / UF</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.cidade} - {enderecoEntrega.estado}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">CEP</p>
+                <p className="text-sm font-medium text-foreground">{enderecoEntrega.cep}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
             <Package className="h-4 w-4 text-primary" />
