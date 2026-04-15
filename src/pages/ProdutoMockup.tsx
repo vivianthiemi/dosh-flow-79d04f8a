@@ -23,7 +23,7 @@ interface ProdutoData {
 }
 
 const defaultProduto: ProdutoData = {
-  marca: "Caplife",
+  marca: "CAPLIFE",
   nome: "Body Scrub 412 VIP Rose",
   codigo: "L-28",
   qtdBox: "24",
@@ -87,9 +87,9 @@ export default function ProdutoMockup() {
             <div>
               <Label>Imagem</Label>
               <div className="flex items-center gap-3 mt-1.5">
-                <div className="h-14 w-14 rounded-lg bg-muted flex items-center justify-center">
+                <div className="h-14 w-14 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                   {produto.imagemUrl ? (
-                    <img src={produto.imagemUrl} className="h-full w-full object-cover rounded-lg" />
+                    <img src={produto.imagemUrl} className="h-full w-full object-cover" />
                   ) : (
                     <Package className="h-6 w-6 text-muted-foreground" />
                   )}
@@ -184,45 +184,210 @@ export default function ProdutoMockup() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div style={{ transform: "scale(0.35)", transformOrigin: "top center", position: "absolute", top: 0 }}>
                   {/* Actual 1080x1920 mockup */}
-                  <div ref={mockupRef} style={{ width: 1080, height: 1920 }} className="bg-white flex flex-col">
+                  <div
+                    ref={mockupRef}
+                    style={{ width: 1080, height: 1920, fontFamily: "'DM Sans', 'Helvetica Neue', Arial, sans-serif" }}
+                    className="flex flex-col"
+                  >
+                    {/* Top gradient accent bar */}
+                    <div style={{ height: 6, background: "linear-gradient(90deg, #1B3A4A, #2D7A8A, #1B3A4A)" }} />
+
                     {/* Header */}
-                    <div className="flex items-center justify-between px-12 py-8 border-b-2 border-gray-100">
-                      <span className="text-[28px] font-black tracking-wide text-gray-900 uppercase">{produto.marca}</span>
-                      <span className="text-[24px] font-semibold text-gray-500 uppercase tracking-wide">{produto.nome}</span>
+                    <div
+                      style={{
+                        background: "#FAFBFC",
+                        borderBottom: "1px solid #E8ECF0",
+                        padding: "28px 48px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 32,
+                          fontWeight: 800,
+                          letterSpacing: "0.08em",
+                          color: "#1B2A4A",
+                          fontFamily: "'Space Grotesk', sans-serif",
+                        }}
+                      >
+                        {produto.marca}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 22,
+                          fontWeight: 600,
+                          color: "#5A6B80",
+                          letterSpacing: "0.02em",
+                          textAlign: "right",
+                          maxWidth: 600,
+                        }}
+                      >
+                        {produto.nome.toUpperCase()}
+                      </span>
                     </div>
 
-                    {/* Product Image */}
-                    <div className="flex-1 flex items-center justify-center bg-gray-50 relative" style={{ minHeight: 900 }}>
+                    {/* Product Image Area */}
+                    <div
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "#FFFFFF",
+                        position: "relative",
+                        minHeight: 950,
+                      }}
+                    >
+                      {/* Subtle watermark pattern */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          opacity: 0.03,
+                          backgroundImage:
+                            "repeating-linear-gradient(45deg, #1B2A4A 0, #1B2A4A 1px, transparent 1px, transparent 40px)",
+                        }}
+                      />
                       {produto.imagemUrl ? (
-                        <img src={produto.imagemUrl} className="max-w-full max-h-full object-contain p-8" />
+                        <img
+                          src={produto.imagemUrl}
+                          style={{
+                            maxWidth: "85%",
+                            maxHeight: "90%",
+                            objectFit: "contain",
+                            filter: "drop-shadow(0 8px 32px rgba(27, 42, 74, 0.12))",
+                            position: "relative",
+                            zIndex: 1,
+                          }}
+                        />
                       ) : (
-                        <span className="text-[32px] text-gray-300">Imagem do Produto</span>
+                        <span style={{ fontSize: 30, color: "#C8D0DA", fontWeight: 500, position: "relative", zIndex: 1 }}>
+                          Imagem do Produto
+                        </span>
                       )}
                     </div>
 
-                    {/* Price Bar */}
-                    <div className="flex">
-                      <div className="flex-1 bg-[#8B1A8B] flex flex-col items-center justify-center py-8">
-                        <span className="text-[20px] font-bold text-white/80 uppercase tracking-widest">Custo:</span>
-                        <span className="text-[56px] font-black text-white leading-tight">{formatCurrency(produto.precoCusto)}</span>
+                    {/* Price Section */}
+                    <div style={{ display: "flex", height: 180 }}>
+                      <div
+                        style={{
+                          flex: 1,
+                          background: "linear-gradient(135deg, #1B3A4A 0%, #2A5C6B 100%)",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.65)",
+                            letterSpacing: "0.15em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          Custo
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 52,
+                            fontWeight: 800,
+                            color: "#FFFFFF",
+                            lineHeight: 1.1,
+                            fontFamily: "'Space Grotesk', sans-serif",
+                          }}
+                        >
+                          {formatCurrency(produto.precoCusto)}
+                        </span>
                       </div>
-                      <div className="flex-1 bg-gray-900 flex flex-col items-center justify-center py-8">
-                        <span className="text-[20px] font-bold text-white/80 uppercase tracking-widest">Unidade:</span>
-                        <span className="text-[56px] font-black text-white leading-tight">{formatCurrency(produto.precoUnidade)}</span>
+                      <div
+                        style={{
+                          width: 2,
+                          background: "rgba(255,255,255,0.15)",
+                        }}
+                      />
+                      <div
+                        style={{
+                          flex: 1,
+                          background: "linear-gradient(135deg, #1B2A4A 0%, #2A3D5C 100%)",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 700,
+                            color: "rgba(255,255,255,0.65)",
+                            letterSpacing: "0.15em",
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          Unidade
+                        </span>
+                        <span
+                          style={{
+                            fontSize: 52,
+                            fontWeight: 800,
+                            color: "#FFFFFF",
+                            lineHeight: 1.1,
+                            fontFamily: "'Space Grotesk', sans-serif",
+                          }}
+                        >
+                          {formatCurrency(produto.precoUnidade)}
+                        </span>
                       </div>
                     </div>
 
                     {/* Benefits */}
-                    <div className="px-12 py-10 bg-white">
-                      <p className="text-[24px] font-black text-gray-900 uppercase tracking-wide mb-3">Benefícios:</p>
-                      <div className="text-[22px] text-gray-700 whitespace-pre-line leading-relaxed">{produto.beneficios}</div>
+                    <div
+                      style={{
+                        padding: "32px 48px 40px",
+                        background: "#FAFBFC",
+                        borderTop: "1px solid #E8ECF0",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 800,
+                          color: "#1B2A4A",
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase",
+                          marginBottom: 12,
+                          fontFamily: "'Space Grotesk', sans-serif",
+                        }}
+                      >
+                        Benefícios
+                      </p>
+                      <div
+                        style={{
+                          fontSize: 20,
+                          color: "#5A6B80",
+                          whiteSpace: "pre-line",
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {produto.beneficios}
+                      </div>
                     </div>
+
+                    {/* Bottom accent bar */}
+                    <div style={{ height: 6, background: "linear-gradient(90deg, #1B3A4A, #2D7A8A, #1B3A4A)" }} />
                   </div>
                 </div>
               </div>
             </div>
 
-            <Button onClick={handleDownload} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-6 text-base">
+            <Button onClick={handleDownload} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-6 text-base">
               <Download className="h-5 w-5 mr-2" />
               Baixar Imagem
             </Button>
