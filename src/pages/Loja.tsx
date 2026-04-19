@@ -84,7 +84,7 @@ export default function Loja() {
   const [submittedOrder, setSubmittedOrder] = useState<{ id: string; total: number } | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const [form, setForm] = useState({
     customer_name: "",
