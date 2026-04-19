@@ -366,7 +366,7 @@ export default function Loja() {
             return (
               <section
                 key={c.id}
-                ref={(el) => (sectionRefs.current[c.id] = el)}
+                ref={(el) => { sectionRefs.current[c.id] = el; }}
                 className="mb-10 scroll-mt-44"
               >
                 <h2 className="text-xl font-bold mb-4">{c.name}</h2>
