@@ -429,7 +429,7 @@ export default function Loja() {
 
       {/* Checkout dialog */}
       <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg w-[calc(100%-1.5rem)] sm:w-full max-h-[92vh] overflow-y-auto p-4 sm:p-6 rounded-xl">
           <DialogHeader>
             <DialogTitle>Finalizar pedido</DialogTitle>
             <DialogDescription>Preencha seus dados para concluir</DialogDescription>
