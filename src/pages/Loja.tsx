@@ -236,7 +236,12 @@ export default function Loja() {
       address_complement: form.fulfillment_type === "delivery" ? form.address_complement : null,
       address_neighborhood: form.fulfillment_type === "delivery" ? form.address_neighborhood : null,
       address_city: form.fulfillment_type === "delivery" ? form.address_city : null,
-      notes: form.notes || null,
+      notes: [
+        form.payment_method === "dinheiro" && form.needs_change === "yes" && form.change_for
+          ? `Troco para ${formatBRL(Number(form.change_for.replace(",", ".")) || 0)}`
+          : null,
+        form.notes,
+      ].filter(Boolean).join(" | ") || null,
       items,
       subtotal,
       delivery_fee: deliveryFee,
