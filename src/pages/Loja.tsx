@@ -230,14 +230,24 @@ export default function Loja() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="flex-1">
-            <h1 className="text-lg font-bold leading-tight">ShiftUp Cardápio</h1>
-            <p className="text-xs text-muted-foreground">Aberto agora • Entrega e Retirada</p>
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base sm:text-lg font-bold leading-tight truncate">ShiftUp Cardápio</h1>
+            <p className="text-[11px] sm:text-xs text-muted-foreground truncate">Aberto agora • Entrega e Retirada</p>
           </div>
           <Sheet open={cartOpen} onOpenChange={setCartOpen}>
             <SheetTrigger asChild>
-              <Button variant="default" className="relative">
+              <Button variant="default" size="icon" className="relative sm:hidden h-10 w-10 flex-shrink-0">
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <Badge className="absolute -top-1.5 -right-1.5 h-5 min-w-5 rounded-full px-1.5 text-[10px]">
+                    {cartCount}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetTrigger asChild>
+              <Button variant="default" className="relative hidden sm:inline-flex">
                 <ShoppingBag className="h-4 w-4 mr-2" />
                 Carrinho
                 {cartCount > 0 && (
@@ -321,26 +331,26 @@ export default function Loja() {
         </div>
 
         {/* Search */}
-        <div className="max-w-5xl mx-auto px-4 pb-3">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 pb-2 sm:pb-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar no cardápio..."
-              className="pl-9"
+              className="pl-9 h-10"
             />
           </div>
         </div>
 
         {/* Category tabs */}
-        <nav className="max-w-5xl mx-auto px-4 pb-3 overflow-x-auto">
+        <nav className="max-w-5xl mx-auto px-3 sm:px-4 pb-2.5 sm:pb-3 overflow-x-auto scrollbar-none">
           <div className="flex gap-2">
             {categories.map((c) => (
               <button
                 key={c.id}
                 onClick={() => scrollToCat(c.id)}
-                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                className={`whitespace-nowrap rounded-full px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition ${
                   activeCat === c.id
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-foreground hover:bg-muted/80"
@@ -354,7 +364,7 @@ export default function Loja() {
       </header>
 
       {/* Catalog */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-28 sm:pb-6">
         {loading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -367,30 +377,30 @@ export default function Loja() {
               <section
                 key={c.id}
                 ref={(el) => { sectionRefs.current[c.id] = el; }}
-                className="mb-10 scroll-mt-44"
+                className="mb-8 sm:mb-10 scroll-mt-44"
               >
-                <h2 className="text-xl font-bold mb-4">{c.name}</h2>
-                <div className="grid sm:grid-cols-2 gap-3">
+                <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{c.name}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   {items.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => addToCart(p)}
-                      className="text-left flex gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:shadow-md transition"
+                      className="text-left flex gap-3 p-2.5 sm:p-3 rounded-lg border bg-card hover:border-primary hover:shadow-md active:scale-[0.99] transition"
                     >
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{p.name}</h3>
+                        <h3 className="font-semibold text-sm sm:text-base truncate">{p.name}</h3>
                         {p.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-0.5">
                             {p.description}
                           </p>
                         )}
-                        <p className="font-bold text-primary mt-2">{formatBRL(Number(p.price))}</p>
+                        <p className="font-bold text-primary mt-1.5 sm:mt-2 text-sm sm:text-base">{formatBRL(Number(p.price))}</p>
                       </div>
                       {p.image_url && (
                         <img
                           src={p.image_url}
                           alt={p.name}
-                          className="w-24 h-24 rounded-md object-cover flex-shrink-0"
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-md object-cover flex-shrink-0"
                           loading="lazy"
                         />
                       )}
@@ -405,10 +415,10 @@ export default function Loja() {
 
       {/* Floating cart bar (mobile-friendly) */}
       {cartCount > 0 && !cartOpen && (
-        <div className="fixed bottom-4 left-4 right-4 z-20 max-w-5xl mx-auto">
+        <div className="fixed bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 max-w-5xl mx-auto">
           <Button
             size="lg"
-            className="w-full shadow-lg h-14"
+            className="w-full shadow-lg h-12 sm:h-14 text-sm sm:text-base"
             onClick={() => setCartOpen(true)}
           >
             <ShoppingBag className="h-5 w-5 mr-2" />
@@ -419,7 +429,7 @@ export default function Loja() {
 
       {/* Checkout dialog */}
       <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-lg w-[calc(100%-1.5rem)] sm:w-full max-h-[92vh] overflow-y-auto p-4 sm:p-6 rounded-xl">
           <DialogHeader>
             <DialogTitle>Finalizar pedido</DialogTitle>
             <DialogDescription>Preencha seus dados para concluir</DialogDescription>
@@ -579,11 +589,11 @@ export default function Loja() {
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setCheckoutOpen(false)} disabled={submitting}>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setCheckoutOpen(false)} disabled={submitting} className="w-full sm:w-auto">
               Voltar
             </Button>
-            <Button onClick={handleSubmitOrder} disabled={submitting}>
+            <Button onClick={handleSubmitOrder} disabled={submitting} className="w-full sm:w-auto">
               {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Confirmar pedido
             </Button>
