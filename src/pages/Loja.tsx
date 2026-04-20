@@ -230,14 +230,24 @@ export default function Loja() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="flex-1">
-            <h1 className="text-lg font-bold leading-tight">ShiftUp Cardápio</h1>
-            <p className="text-xs text-muted-foreground">Aberto agora • Entrega e Retirada</p>
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base sm:text-lg font-bold leading-tight truncate">ShiftUp Cardápio</h1>
+            <p className="text-[11px] sm:text-xs text-muted-foreground truncate">Aberto agora • Entrega e Retirada</p>
           </div>
           <Sheet open={cartOpen} onOpenChange={setCartOpen}>
             <SheetTrigger asChild>
-              <Button variant="default" className="relative">
+              <Button variant="default" size="icon" className="relative sm:hidden h-10 w-10 flex-shrink-0">
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <Badge className="absolute -top-1.5 -right-1.5 h-5 min-w-5 rounded-full px-1.5 text-[10px]">
+                    {cartCount}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetTrigger asChild>
+              <Button variant="default" className="relative hidden sm:inline-flex">
                 <ShoppingBag className="h-4 w-4 mr-2" />
                 Carrinho
                 {cartCount > 0 && (
