@@ -91,13 +91,43 @@ export default function Loja() {
     customer_phone: "",
     fulfillment_type: "delivery" as "delivery" | "pickup",
     payment_method: "pix" as "pix" | "dinheiro" | "cartao_credito" | "cartao_debito",
+    address_cep: "",
     address_street: "",
     address_number: "",
     address_complement: "",
     address_neighborhood: "",
     address_city: "",
+    address_state: "",
+    change_for: "",
+    needs_change: "no" as "yes" | "no",
     notes: "",
   });
+  const [cepLoading, setCepLoading] = useState(false);
+
+  const handleCepBlur = async () => {
+    const cep = form.address_cep.replace(/\D/g, "");
+    if (cep.length !== 8) return;
+    setCepLoading(true);
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+      if (data.erro) {
+        toast({ title: "CEP não encontrado", variant: "destructive" });
+      } else {
+        setForm((f) => ({
+          ...f,
+          address_street: data.logradouro || f.address_street,
+          address_neighborhood: data.bairro || f.address_neighborhood,
+          address_city: data.localidade || f.address_city,
+          address_state: data.uf || f.address_state,
+        }));
+      }
+    } catch {
+      toast({ title: "Erro ao buscar CEP", variant: "destructive" });
+    } finally {
+      setCepLoading(false);
+    }
+  };
 
   useEffect(() => {
     document.title = "Cardápio Online — Faça seu pedido";
