@@ -377,30 +377,30 @@ export default function Loja() {
               <section
                 key={c.id}
                 ref={(el) => { sectionRefs.current[c.id] = el; }}
-                className="mb-10 scroll-mt-44"
+                className="mb-8 sm:mb-10 scroll-mt-44"
               >
-                <h2 className="text-xl font-bold mb-4">{c.name}</h2>
-                <div className="grid sm:grid-cols-2 gap-3">
+                <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">{c.name}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   {items.map((p) => (
                     <button
                       key={p.id}
                       onClick={() => addToCart(p)}
-                      className="text-left flex gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:shadow-md transition"
+                      className="text-left flex gap-3 p-2.5 sm:p-3 rounded-lg border bg-card hover:border-primary hover:shadow-md active:scale-[0.99] transition"
                     >
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold truncate">{p.name}</h3>
+                        <h3 className="font-semibold text-sm sm:text-base truncate">{p.name}</h3>
                         {p.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mt-0.5">
                             {p.description}
                           </p>
                         )}
-                        <p className="font-bold text-primary mt-2">{formatBRL(Number(p.price))}</p>
+                        <p className="font-bold text-primary mt-1.5 sm:mt-2 text-sm sm:text-base">{formatBRL(Number(p.price))}</p>
                       </div>
                       {p.image_url && (
                         <img
                           src={p.image_url}
                           alt={p.name}
-                          className="w-24 h-24 rounded-md object-cover flex-shrink-0"
+                          className="w-20 h-20 sm:w-24 sm:h-24 rounded-md object-cover flex-shrink-0"
                           loading="lazy"
                         />
                       )}
