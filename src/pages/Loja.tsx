@@ -522,6 +522,26 @@ export default function Loja() {
             {form.fulfillment_type === "delivery" && (
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <Label htmlFor="cep">CEP</Label>
+                    <div className="relative">
+                      <Input
+                        id="cep"
+                        value={form.address_cep}
+                        onChange={(e) => {
+                          const v = e.target.value.replace(/\D/g, "").slice(0, 8);
+                          const formatted = v.length > 5 ? `${v.slice(0, 5)}-${v.slice(5)}` : v;
+                          setForm({ ...form, address_cep: formatted });
+                        }}
+                        onBlur={handleCepBlur}
+                        placeholder="00000-000"
+                        inputMode="numeric"
+                      />
+                      {cepLoading && (
+                        <Loader2 className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </div>
                   <div className="col-span-2">
                     <Label htmlFor="street">Rua</Label>
                     <Input
@@ -530,6 +550,8 @@ export default function Loja() {
                       onChange={(e) => setForm({ ...form, address_street: e.target.value })}
                     />
                   </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
                   <div>
                     <Label htmlFor="num">Número</Label>
                     <Input
@@ -538,9 +560,7 @@ export default function Loja() {
                       onChange={(e) => setForm({ ...form, address_number: e.target.value })}
                     />
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
+                  <div className="col-span-2">
                     <Label htmlFor="comp">Complemento</Label>
                     <Input
                       id="comp"
@@ -549,6 +569,8 @@ export default function Loja() {
                       placeholder="Apto, bloco..."
                     />
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="bairro">Bairro</Label>
                     <Input
@@ -557,14 +579,14 @@ export default function Loja() {
                       onChange={(e) => setForm({ ...form, address_neighborhood: e.target.value })}
                     />
                   </div>
-                </div>
-                <div>
-                  <Label htmlFor="city">Cidade</Label>
-                  <Input
-                    id="city"
-                    value={form.address_city}
-                    onChange={(e) => setForm({ ...form, address_city: e.target.value })}
-                  />
+                  <div>
+                    <Label htmlFor="city">Cidade</Label>
+                    <Input
+                      id="city"
+                      value={form.address_city}
+                      onChange={(e) => setForm({ ...form, address_city: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -593,6 +615,37 @@ export default function Loja() {
                   </label>
                 ))}
               </RadioGroup>
+              {form.payment_method === "dinheiro" && (
+                <div className="mt-3 space-y-2 border rounded-lg p-3 bg-muted/30">
+                  <Label className="block text-sm">Precisa de troco?</Label>
+                  <RadioGroup
+                    value={form.needs_change}
+                    onValueChange={(v) => setForm({ ...form, needs_change: v as "yes" | "no" })}
+                    className="grid grid-cols-2 gap-2"
+                  >
+                    <label className={`flex items-center gap-2 border rounded-lg p-2 cursor-pointer text-sm bg-background ${form.needs_change === "no" ? "border-primary" : ""}`}>
+                      <RadioGroupItem value="no" />
+                      <span>Não preciso</span>
+                    </label>
+                    <label className={`flex items-center gap-2 border rounded-lg p-2 cursor-pointer text-sm bg-background ${form.needs_change === "yes" ? "border-primary" : ""}`}>
+                      <RadioGroupItem value="yes" />
+                      <span>Sim</span>
+                    </label>
+                  </RadioGroup>
+                  {form.needs_change === "yes" && (
+                    <div>
+                      <Label htmlFor="change_for" className="text-sm">Troco para quanto?</Label>
+                      <Input
+                        id="change_for"
+                        value={form.change_for}
+                        onChange={(e) => setForm({ ...form, change_for: e.target.value.replace(/[^\d,.]/g, "") })}
+                        placeholder="Ex: 100,00"
+                        inputMode="decimal"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div>
