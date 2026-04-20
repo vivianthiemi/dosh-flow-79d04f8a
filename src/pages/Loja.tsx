@@ -331,26 +331,26 @@ export default function Loja() {
         </div>
 
         {/* Search */}
-        <div className="max-w-5xl mx-auto px-4 pb-3">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 pb-2 sm:pb-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar no cardápio..."
-              className="pl-9"
+              className="pl-9 h-10"
             />
           </div>
         </div>
 
         {/* Category tabs */}
-        <nav className="max-w-5xl mx-auto px-4 pb-3 overflow-x-auto">
+        <nav className="max-w-5xl mx-auto px-3 sm:px-4 pb-2.5 sm:pb-3 overflow-x-auto scrollbar-none">
           <div className="flex gap-2">
             {categories.map((c) => (
               <button
                 key={c.id}
                 onClick={() => scrollToCat(c.id)}
-                className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                className={`whitespace-nowrap rounded-full px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-medium transition ${
                   activeCat === c.id
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-foreground hover:bg-muted/80"
@@ -364,7 +364,7 @@ export default function Loja() {
       </header>
 
       {/* Catalog */}
-      <main className="max-w-5xl mx-auto px-4 py-6">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-28 sm:pb-6">
         {loading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
