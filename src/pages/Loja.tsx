@@ -589,11 +589,11 @@ export default function Loja() {
               </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setCheckoutOpen(false)} disabled={submitting}>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setCheckoutOpen(false)} disabled={submitting} className="w-full sm:w-auto">
               Voltar
             </Button>
-            <Button onClick={handleSubmitOrder} disabled={submitting}>
+            <Button onClick={handleSubmitOrder} disabled={submitting} className="w-full sm:w-auto">
               {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Confirmar pedido
             </Button>
