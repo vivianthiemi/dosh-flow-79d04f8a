@@ -415,10 +415,10 @@ export default function Loja() {
 
       {/* Floating cart bar (mobile-friendly) */}
       {cartCount > 0 && !cartOpen && (
-        <div className="fixed bottom-4 left-4 right-4 z-20 max-w-5xl mx-auto">
+        <div className="fixed bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-20 max-w-5xl mx-auto">
           <Button
             size="lg"
-            className="w-full shadow-lg h-14"
+            className="w-full shadow-lg h-12 sm:h-14 text-sm sm:text-base"
             onClick={() => setCartOpen(true)}
           >
             <ShoppingBag className="h-5 w-5 mr-2" />
