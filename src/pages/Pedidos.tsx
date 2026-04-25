@@ -313,7 +313,7 @@ const Pedidos = () => {
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="font-mono text-[11px] text-muted-foreground">#{p.id}</span>
+                            <span className="font-mono text-[11px] text-muted-foreground">Cód. {p.codigo}</span>
                             <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium", status.className)}>
                               {status.label}
                             </span>
@@ -324,9 +324,8 @@ const Pedidos = () => {
                             )}
                           </div>
                           <Link to="/pedido-v2" className="mt-1 block truncate text-base font-semibold text-foreground">
-                            {p.descricao}
+                            {p.cliente}
                           </Link>
-                          <p className="text-sm text-muted-foreground">{p.cliente}</p>
                           <p className="mt-1 text-xs text-muted-foreground">
                             {p.parcelas} · {p.data}
                           </p>
