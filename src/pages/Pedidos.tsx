@@ -13,10 +13,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Check,
+  Link2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 type StatusKey = "orcamento" | "aprovado" | "programado" | "cancelado";
 
@@ -69,7 +71,17 @@ const Pedidos = () => {
   const [activeTab, setActiveTab] = useState<"todos" | StatusKey>("todos");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
 
+  const copyOrderLink = async (id: string) => {
+    const url = `${window.location.origin}/pedido-v2?id=${id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: "Link copiado!", description: "Pronto para enviar ao cliente." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: url, variant: "destructive" });
+    }
+  };
   const counts = useMemo(() => {
     const c: Record<string, number> = { todos: pedidos.length };
     (Object.keys(statusConfig) as StatusKey[]).forEach((k) => {
@@ -291,6 +303,7 @@ const Pedidos = () => {
                       <div className="flex items-center justify-end gap-0.5">
                         <RowAction icon={Pencil} label="Editar" />
                         <RowAction icon={Printer} label="Imprimir" />
+                        <RowAction icon={Link2} label="Copiar link do pedido" onClick={() => copyOrderLink(p.id)} />
                         <RowAction icon={Trash2} label="Excluir" tone="danger" />
                       </div>
                     </li>
@@ -340,6 +353,15 @@ const Pedidos = () => {
                         </Button>
                         <Button variant="outline" size="sm" className="flex-1 gap-1.5">
                           <Printer className="h-3.5 w-3.5" /> Imprimir
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="px-3"
+                          onClick={() => copyOrderLink(p.id)}
+                          aria-label="Copiar link do pedido"
+                        >
+                          <Link2 className="h-3.5 w-3.5" />
                         </Button>
                         <Button variant="outline" size="sm" className="px-3 text-destructive hover:text-destructive">
                           <Trash2 className="h-3.5 w-3.5" />
@@ -403,13 +425,17 @@ const RowAction = ({
   icon: Icon,
   label,
   tone,
+  onClick,
 }: {
   icon: typeof Pencil;
   label: string;
   tone?: "danger";
+  onClick?: () => void;
 }) => (
   <button
     aria-label={label}
+    title={label}
+    onClick={onClick}
     className={cn(
       "inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
       tone === "danger" && "hover:bg-destructive/10 hover:text-destructive",
