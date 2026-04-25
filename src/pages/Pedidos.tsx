@@ -71,7 +71,17 @@ const Pedidos = () => {
   const [activeTab, setActiveTab] = useState<"todos" | StatusKey>("todos");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
 
+  const copyOrderLink = async (id: string) => {
+    const url = `${window.location.origin}/pedido-v2?id=${id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: "Link copiado!", description: "Pronto para enviar ao cliente." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: url, variant: "destructive" });
+    }
+  };
   const counts = useMemo(() => {
     const c: Record<string, number> = { todos: pedidos.length };
     (Object.keys(statusConfig) as StatusKey[]).forEach((k) => {
