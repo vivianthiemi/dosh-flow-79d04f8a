@@ -133,12 +133,6 @@ const Pedidos = () => {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2">
-              <CheckSquare className="h-4 w-4" /> Ações em grupo
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2">
-              <MoreHorizontal className="h-4 w-4" /> Mais ações
-            </Button>
             <Button variant="ghost" size="sm" className="gap-2">
               <RefreshCw className="h-4 w-4" />
             </Button>
