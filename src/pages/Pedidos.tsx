@@ -435,7 +435,7 @@ const RowAction = ({
 const EmptyState = () => (
   <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
     <div className="rounded-full bg-secondary p-3">
-      <ShoppingCart className="h-6 w-6 text-muted-foreground" />
+      <Search className="h-6 w-6 text-muted-foreground" />
     </div>
     <p className="text-sm font-medium text-foreground">Nenhum pedido encontrado</p>
     <p className="text-xs text-muted-foreground">Tente ajustar os filtros ou crie um novo pedido.</p>
