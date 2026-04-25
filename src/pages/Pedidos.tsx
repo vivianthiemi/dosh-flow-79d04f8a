@@ -227,20 +227,16 @@ const Pedidos = () => {
 
           {/* Desktop table */}
           <div className="hidden lg:block">
-            <div className="grid grid-cols-[40px_80px_60px_minmax(0,1.2fr)_90px_80px_minmax(0,1.2fr)_minmax(0,1fr)_120px_100px_80px_130px_60px] items-center gap-3 border-b border-border bg-muted/40 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="grid grid-cols-[40px_70px_minmax(0,1.4fr)_90px_140px_110px_80px_130px_80px] items-center gap-3 border-b border-border bg-muted/40 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               <input
                 type="checkbox"
                 className="h-4 w-4 rounded border-border accent-primary"
                 checked={selected.size > 0 && selected.size === filtered.length}
                 onChange={toggleAll}
               />
-              <span>ID</span>
               <span>Cód.</span>
-              <span>Descrição</span>
-              <span>Vigência</span>
-              <span>Parcelas</span>
               <span>Cliente</span>
-              <span>Categoria</span>
+              <span>Parcelas</span>
               <span className="text-right">Valor (R$)</span>
               <span>Data</span>
               <span className="text-center">Liquid.</span>
@@ -259,7 +255,7 @@ const Pedidos = () => {
                     <li
                       key={p.id}
                       className={cn(
-                        "grid grid-cols-[40px_80px_60px_minmax(0,1.2fr)_90px_80px_minmax(0,1.2fr)_minmax(0,1fr)_120px_100px_80px_130px_60px] items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted/30",
+                        "grid grid-cols-[40px_70px_minmax(0,1.4fr)_90px_140px_110px_80px_130px_80px] items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted/30",
                         isSelected && "bg-primary/5",
                       )}
                     >
@@ -269,19 +265,11 @@ const Pedidos = () => {
                         checked={isSelected}
                         onChange={() => toggle(p.id)}
                       />
-                      <span className="font-mono text-xs text-muted-foreground">{p.id}</span>
                       <span className="text-xs tabular-nums text-muted-foreground">{p.codigo}</span>
                       <Link to="/pedido-v2" className="truncate font-medium text-foreground hover:text-primary">
-                        {p.descricao}
+                        {p.cliente}
                       </Link>
-                      <span className="text-xs text-muted-foreground">{p.vigencia}</span>
                       <span className="text-xs tabular-nums text-muted-foreground">{p.parcelas}</span>
-                      <span className="truncate text-foreground">{p.cliente}</span>
-                      <span className="truncate">
-                        <span className="inline-block rounded-md bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
-                          {p.categoria}
-                        </span>
-                      </span>
                       <span className="text-right font-semibold tabular-nums text-foreground">
                         {formatCurrency(p.valor)}
                       </span>
