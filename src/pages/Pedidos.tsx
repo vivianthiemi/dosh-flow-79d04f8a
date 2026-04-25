@@ -303,6 +303,7 @@ const Pedidos = () => {
                       <div className="flex items-center justify-end gap-0.5">
                         <RowAction icon={Pencil} label="Editar" />
                         <RowAction icon={Printer} label="Imprimir" />
+                        <RowAction icon={Link2} label="Copiar link do pedido" onClick={() => copyOrderLink(p.id)} />
                         <RowAction icon={Trash2} label="Excluir" tone="danger" />
                       </div>
                     </li>
