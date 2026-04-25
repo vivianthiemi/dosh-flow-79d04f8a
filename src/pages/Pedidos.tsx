@@ -354,6 +354,15 @@ const Pedidos = () => {
                         <Button variant="outline" size="sm" className="flex-1 gap-1.5">
                           <Printer className="h-3.5 w-3.5" /> Imprimir
                         </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="px-3"
+                          onClick={() => copyOrderLink(p.id)}
+                          aria-label="Copiar link do pedido"
+                        >
+                          <Link2 className="h-3.5 w-3.5" />
+                        </Button>
                         <Button variant="outline" size="sm" className="px-3 text-destructive hover:text-destructive">
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
