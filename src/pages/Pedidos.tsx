@@ -416,13 +416,17 @@ const RowAction = ({
   icon: Icon,
   label,
   tone,
+  onClick,
 }: {
   icon: typeof Pencil;
   label: string;
   tone?: "danger";
+  onClick?: () => void;
 }) => (
   <button
     aria-label={label}
+    title={label}
+    onClick={onClick}
     className={cn(
       "inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
       tone === "danger" && "hover:bg-destructive/10 hover:text-destructive",
