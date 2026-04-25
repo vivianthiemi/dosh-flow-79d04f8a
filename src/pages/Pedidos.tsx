@@ -8,6 +8,14 @@ import {
   Search,
   TrendingUp,
   ShoppingCart,
+  Calendar,
+  SlidersHorizontal,
+  RefreshCw,
+  CheckSquare,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,24 +24,35 @@ import { cn } from "@/lib/utils";
 type StatusKey = "orcamento" | "aprovado" | "programado" | "cancelado";
 
 interface PedidoItem {
+  id: string;
   codigo: string;
+  descricao: string;
+  vigencia: string;
+  parcelas: string;
   cliente: string;
-  cidade: string;
-  uf: string;
-  status: StatusKey;
-  total: number;
+  categoria: string;
+  valor: number;
   data: string;
+  liquidada: boolean;
+  status: StatusKey;
 }
 
 const pedidos: PedidoItem[] = [
-  { codigo: "#1002", cliente: "Authentica", cidade: "Bauru", uf: "SP", status: "orcamento", total: 334.26, data: "24/04/2026" },
-  { codigo: "#1001", cliente: "A Escolhida Makeup", cidade: "Marília", uf: "SP", status: "orcamento", total: 2575.51, data: "23/04/2026" },
-  { codigo: "#1000", cliente: "Rafael Afiação", cidade: "Marília", uf: "SP", status: "orcamento", total: 432.7, data: "21/04/2026" },
+  { id: "94049", codigo: "1", descricao: "Ingrid", vigencia: "—", parcelas: "—", cliente: "Ingrid Felipe", categoria: "4.01.01 Produtos", valor: 2706.92, data: "09/01/2026", liquidada: true, status: "aprovado" },
+  { id: "97167", codigo: "2", descricao: "Orçamento Nathalia", vigencia: "30 dias", parcelas: "1x", cliente: "Nathalia Almeida", categoria: "4.01.01 Produtos", valor: 1219.64, data: "16/01/2026", liquidada: false, status: "orcamento" },
+  { id: "97264", codigo: "3", descricao: "Venda balcão", vigencia: "—", parcelas: "1x", cliente: "Jaqueline Torrezan", categoria: "4.01.01 Produtos", valor: 472.35, data: "16/01/2026", liquidada: true, status: "aprovado" },
+  { id: "97718", codigo: "4", descricao: "Globox kit", vigencia: "—", parcelas: "2x", cliente: "Nathalia Almeida", categoria: "4.01.01 Produtos", valor: 444.30, data: "19/01/2026", liquidada: true, status: "aprovado" },
+  { id: "97793", codigo: "5", descricao: "Globox kit", vigencia: "—", parcelas: "3x", cliente: "Carol", categoria: "4.01.01 Produtos", valor: 1076.53, data: "19/01/2026", liquidada: true, status: "aprovado" },
+  { id: "97802", codigo: "6", descricao: "Outbox solo", vigencia: "—", parcelas: "1x", cliente: "Estefany", categoria: "4.01.01 Produtos", valor: 325.13, data: "19/01/2026", liquidada: false, status: "programado" },
+  { id: "98135", codigo: "9", descricao: "Globox", vigencia: "—", parcelas: "1x", cliente: "Nathalia Almeida", categoria: "4.01.01 Produtos", valor: 86.66, data: "20/01/2026", liquidada: true, status: "aprovado" },
+  { id: "98155", codigo: "10", descricao: "Outbox alto alegre", vigencia: "—", parcelas: "1x", cliente: "Shirley Sabor de Fruta", categoria: "4.01.01 Produtos", valor: 111.55, data: "20/01/2026", liquidada: true, status: "aprovado" },
+  { id: "98188", codigo: "11", descricao: "Outbox", vigencia: "—", parcelas: "1x", cliente: "Carol", categoria: "4.01.01 Produtos", valor: 58.80, data: "20/01/2026", liquidada: false, status: "cancelado" },
+  { id: "98372", codigo: "12", descricao: "Outbox premium", vigencia: "—", parcelas: "2x", cliente: "Juliana", categoria: "4.01.01 Produtos", valor: 437.89, data: "20/01/2026", liquidada: true, status: "aprovado" },
 ];
 
 const statusConfig: Record<StatusKey, { label: string; className: string }> = {
-  orcamento: { label: "Orçamento", className: "bg-highlight/15 text-highlight-foreground border-highlight/30" },
-  aprovado: { label: "Aprovado", className: "bg-accent/15 text-accent border-accent/30" },
+  orcamento: { label: "Orçamento", className: "bg-highlight/15 text-foreground border-highlight/40" },
+  aprovado: { label: "Aprovado", className: "bg-accent/10 text-accent border-accent/30" },
   programado: { label: "Programado", className: "bg-primary/10 text-primary border-primary/30" },
   cancelado: { label: "Cancelado", className: "bg-destructive/10 text-destructive border-destructive/30" },
 };
@@ -52,6 +71,7 @@ const formatCurrency = (v: number) =>
 const Pedidos = () => {
   const [activeTab, setActiveTab] = useState<"todos" | StatusKey>("todos");
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { todos: pedidos.length };
@@ -59,6 +79,16 @@ const Pedidos = () => {
       c[k] = pedidos.filter((p) => p.status === k).length;
     });
     return c;
+  }, []);
+
+  const totals = useMemo(() => {
+    const sum = (s: StatusKey) => pedidos.filter((p) => p.status === s).reduce((a, b) => a + b.valor, 0);
+    return {
+      cancelado: sum("cancelado"),
+      previsto: sum("orcamento") + sum("programado"),
+      aprovado: sum("aprovado"),
+      total: pedidos.reduce((a, b) => a + b.valor, 0),
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -69,90 +99,162 @@ const Pedidos = () => {
         const q = search.toLowerCase();
         return (
           p.cliente.toLowerCase().includes(q) ||
-          p.codigo.toLowerCase().includes(q) ||
-          p.cidade.toLowerCase().includes(q)
+          p.descricao.toLowerCase().includes(q) ||
+          p.id.includes(q)
         );
       });
   }, [activeTab, search]);
 
+  const toggle = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  const toggleAll = () =>
+    setSelected((prev) =>
+      prev.size === filtered.length ? new Set() : new Set(filtered.map((p) => p.id)),
+    );
+
   return (
     <div className="min-h-screen bg-background font-sans">
-      {/* Mobile top bar */}
       <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-border bg-card/95 px-4 py-3 backdrop-blur lg:hidden">
         <TrendingUp className="h-5 w-5 text-accent" />
         <span className="font-display text-lg font-bold tracking-tight">Shift Up</span>
       </header>
 
-      <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-        {/* Page header */}
+      <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        {/* Header */}
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Pedidos
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Gerencie orçamentos e vendas
+              Gerencie orçamentos e vendas com flexibilidade e precisão.
             </p>
           </div>
-          <Button size="lg" className="w-full gap-2 sm:w-auto">
-            <Plus className="h-4 w-4" />
-            Novo Pedido
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2">
+              <CheckSquare className="h-4 w-4" /> Ações em grupo
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
+              <MoreHorizontal className="h-4 w-4" /> Mais ações
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-2">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button size="sm" className="gap-2">
+              <Plus className="h-4 w-4" /> Novo Pedido
+            </Button>
+          </div>
         </div>
 
-        {/* Filters card */}
-        <div className="rounded-xl border border-border bg-card shadow-sm">
-          {/* Tabs + search */}
-          <div className="flex flex-col gap-3 border-b border-border p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 lg:pb-0">
-              {tabs.map((t) => {
-                const isActive = activeTab === t.key;
-                return (
-                  <button
-                    key={t.key}
-                    onClick={() => setActiveTab(t.key)}
-                    className={cn(
-                      "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "bg-secondary text-secondary-foreground hover:bg-secondary/70",
-                    )}
-                  >
-                    <span>{t.label}</span>
-                    <span
-                      className={cn(
-                        "rounded-md px-1.5 py-0.5 text-xs tabular-nums",
-                        isActive ? "bg-primary-foreground/20" : "bg-background/60 text-muted-foreground",
-                      )}
-                    >
-                      {counts[t.key] ?? 0}
-                    </span>
-                  </button>
-                );
-              })}
+        {/* Filters */}
+        <div className="mb-4 rounded-xl border border-border bg-card p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-primary">
+              <Search className="h-4 w-4" /> Filtros e busca
+            </h2>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+                <SlidersHorizontal className="h-3.5 w-3.5" /> Mais filtros
+              </Button>
+              <Button variant="ghost" size="sm" className="text-xs">
+                Limpar
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 lg:flex-row">
+            <div className="flex items-center gap-1 rounded-lg border border-border bg-background px-2 py-1.5 lg:w-72">
+              <button className="rounded p-1 hover:bg-muted">
+                <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+              </button>
+              <Calendar className="h-4 w-4 text-primary" />
+              <div className="flex-1 text-center">
+                <p className="text-xs font-medium text-foreground">Período personalizado</p>
+                <p className="text-[11px] text-muted-foreground">01/01/26 até 31/01/26</p>
+              </div>
+              <button className="rounded p-1 hover:bg-muted">
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </button>
             </div>
 
-            <div className="relative lg:w-72">
+            <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar pedido, cliente..."
+                placeholder="Buscar por cliente, descrição ou ID..."
                 className="pl-9"
               />
             </div>
+
+            <Button className="lg:w-28">Buscar</Button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <KpiCard label="Cancelado" count={counts.cancelado} value={totals.cancelado} tone="destructive" />
+          <KpiCard label="Previsto" count={counts.orcamento + counts.programado} value={totals.previsto} tone="highlight" />
+          <KpiCard label="Aprovado" count={counts.aprovado} value={totals.aprovado} tone="accent" />
+          <KpiCard label="Total" count={counts.todos} value={totals.total} tone="primary" />
+        </div>
+
+        {/* Tabs + Table */}
+        <div className="rounded-xl border border-border bg-card shadow-sm">
+          <div className="-mx-1 flex gap-1.5 overflow-x-auto border-b border-border px-4 py-3">
+            {tabs.map((t) => {
+              const isActive = activeTab === t.key;
+              return (
+                <button
+                  key={t.key}
+                  onClick={() => setActiveTab(t.key)}
+                  className={cn(
+                    "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70",
+                  )}
+                >
+                  <span>{t.label}</span>
+                  <span
+                    className={cn(
+                      "rounded-md px-1.5 py-0.5 text-xs tabular-nums",
+                      isActive ? "bg-primary-foreground/20" : "bg-background/60 text-muted-foreground",
+                    )}
+                  >
+                    {counts[t.key] ?? 0}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Desktop table */}
           <div className="hidden lg:block">
-            <div className="grid grid-cols-[110px_minmax(0,1.4fr)_minmax(0,1fr)_140px_140px_120px_120px] items-center gap-4 border-b border-border bg-muted/40 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <span>Código</span>
+            <div className="grid grid-cols-[40px_80px_60px_minmax(0,1.2fr)_90px_80px_minmax(0,1.2fr)_minmax(0,1fr)_120px_100px_80px_130px_60px] items-center gap-3 border-b border-border bg-muted/40 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-border accent-primary"
+                checked={selected.size > 0 && selected.size === filtered.length}
+                onChange={toggleAll}
+              />
+              <span>ID</span>
+              <span>Cód.</span>
+              <span>Descrição</span>
+              <span>Vigência</span>
+              <span>Parcelas</span>
               <span>Cliente</span>
-              <span>Cidade / UF</span>
-              <span>Status</span>
-              <span className="text-right">Total</span>
+              <span>Categoria</span>
+              <span className="text-right">Valor (R$)</span>
               <span>Data</span>
-              <span className="text-right">Ações</span>
+              <span className="text-center">Liquid.</span>
+              <span>Situação</span>
+              <span></span>
             </div>
 
             {filtered.length === 0 ? (
@@ -161,28 +263,53 @@ const Pedidos = () => {
               <ul className="divide-y divide-border">
                 {filtered.map((p) => {
                   const status = statusConfig[p.status];
+                  const isSelected = selected.has(p.id);
                   return (
                     <li
-                      key={p.codigo}
-                      className="grid grid-cols-[110px_minmax(0,1.4fr)_minmax(0,1fr)_140px_140px_120px_120px] items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/30"
+                      key={p.id}
+                      className={cn(
+                        "grid grid-cols-[40px_80px_60px_minmax(0,1.2fr)_90px_80px_minmax(0,1.2fr)_minmax(0,1fr)_120px_100px_80px_130px_60px] items-center gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted/30",
+                        isSelected && "bg-primary/5",
+                      )}
                     >
-                      <span className="font-mono text-sm font-semibold text-primary">{p.codigo}</span>
-                      <Link to="/pedido-v2" className="truncate text-sm font-medium text-foreground hover:text-primary">
-                        {p.cliente}
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-border accent-primary"
+                        checked={isSelected}
+                        onChange={() => toggle(p.id)}
+                      />
+                      <span className="font-mono text-xs text-muted-foreground">{p.id}</span>
+                      <span className="text-xs tabular-nums text-muted-foreground">{p.codigo}</span>
+                      <Link to="/pedido-v2" className="truncate font-medium text-foreground hover:text-primary">
+                        {p.descricao}
                       </Link>
-                      <span className="truncate text-sm text-muted-foreground">
-                        {p.cidade} / {p.uf}
+                      <span className="text-xs text-muted-foreground">{p.vigencia}</span>
+                      <span className="text-xs tabular-nums text-muted-foreground">{p.parcelas}</span>
+                      <span className="truncate text-foreground">{p.cliente}</span>
+                      <span className="truncate">
+                        <span className="inline-block rounded-md bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
+                          {p.categoria}
+                        </span>
+                      </span>
+                      <span className="text-right font-semibold tabular-nums text-foreground">
+                        {formatCurrency(p.valor)}
+                      </span>
+                      <span className="tabular-nums text-muted-foreground">{p.data}</span>
+                      <span className="flex justify-center">
+                        {p.liquidada ? (
+                          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-accent/15 text-accent">
+                            <Check className="h-3 w-3" strokeWidth={3} />
+                          </span>
+                        ) : (
+                          <span className="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground/40" />
+                        )}
                       </span>
                       <span>
-                        <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium", status.className)}>
+                        <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium", status.className)}>
                           {status.label}
                         </span>
                       </span>
-                      <span className="text-right text-sm font-semibold tabular-nums text-foreground">
-                        {formatCurrency(p.total)}
-                      </span>
-                      <span className="text-sm tabular-nums text-muted-foreground">{p.data}</span>
-                      <div className="flex items-center justify-end gap-1">
+                      <div className="flex items-center justify-end gap-0.5">
                         <RowAction icon={Pencil} label="Editar" />
                         <RowAction icon={Printer} label="Imprimir" />
                         <RowAction icon={Trash2} label="Excluir" tone="danger" />
@@ -203,27 +330,31 @@ const Pedidos = () => {
                 {filtered.map((p) => {
                   const status = statusConfig[p.status];
                   return (
-                    <li key={p.codigo} className="p-4">
+                    <li key={p.id} className="p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs font-semibold text-primary">{p.codigo}</span>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-mono text-[11px] text-muted-foreground">#{p.id}</span>
                             <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium", status.className)}>
                               {status.label}
                             </span>
+                            {p.liquidada && (
+                              <span className="inline-flex items-center gap-1 text-[11px] text-accent">
+                                <Check className="h-3 w-3" strokeWidth={3} /> Liquidado
+                              </span>
+                            )}
                           </div>
                           <Link to="/pedido-v2" className="mt-1 block truncate text-base font-semibold text-foreground">
-                            {p.cliente}
+                            {p.descricao}
                           </Link>
-                          <p className="mt-0.5 text-xs text-muted-foreground">
-                            {p.cidade} / {p.uf} · {p.data}
+                          <p className="text-sm text-muted-foreground">{p.cliente}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {p.parcelas} · {p.data}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-base font-bold tabular-nums text-foreground">
-                            {formatCurrency(p.total)}
-                          </p>
-                        </div>
+                        <p className="text-base font-bold tabular-nums text-foreground">
+                          {formatCurrency(p.valor)}
+                        </p>
                       </div>
                       <div className="mt-3 flex items-center gap-2">
                         <Button variant="outline" size="sm" className="flex-1 gap-1.5">
@@ -242,8 +373,50 @@ const Pedidos = () => {
               </ul>
             )}
           </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between border-t border-border px-4 py-3 text-xs text-muted-foreground">
+            <span>
+              {selected.size > 0
+                ? `${selected.size} selecionado${selected.size > 1 ? "s" : ""}`
+                : `${filtered.length} pedido${filtered.length !== 1 ? "s" : ""}`}
+            </span>
+            <span>
+              Total exibido: <strong className="text-foreground">{formatCurrency(filtered.reduce((a, b) => a + b.valor, 0))}</strong>
+            </span>
+          </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const KpiCard = ({
+  label,
+  count,
+  value,
+  tone,
+}: {
+  label: string;
+  count: number;
+  value: number;
+  tone: "destructive" | "highlight" | "accent" | "primary";
+}) => {
+  const tones = {
+    destructive: "border-l-destructive",
+    highlight: "border-l-highlight",
+    accent: "border-l-accent",
+    primary: "border-l-primary",
+  };
+  return (
+    <div className={cn("rounded-xl border border-border border-l-4 bg-card p-4 shadow-sm", tones[tone])}>
+      <div className="flex items-baseline justify-between">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+        <span className="text-xs tabular-nums text-muted-foreground">({count})</span>
+      </div>
+      <p className="mt-1.5 font-display text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+        {formatCurrency(value)}
+      </p>
     </div>
   );
 };
@@ -260,11 +433,11 @@ const RowAction = ({
   <button
     aria-label={label}
     className={cn(
-      "inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+      "inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
       tone === "danger" && "hover:bg-destructive/10 hover:text-destructive",
     )}
   >
-    <Icon className="h-4 w-4" />
+    <Icon className="h-3.5 w-3.5" />
   </button>
 );
 
