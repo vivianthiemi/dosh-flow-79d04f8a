@@ -348,12 +348,6 @@ const Pedidos = () => {
                         </p>
                       </div>
                       <div className="mt-3 flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
-                          <Pencil className="h-3.5 w-3.5" /> Editar
-                        </Button>
-                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
-                          <Printer className="h-3.5 w-3.5" /> Imprimir
-                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -362,6 +356,12 @@ const Pedidos = () => {
                           aria-label="Copiar link do pedido"
                         >
                           <Link2 className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                          <Pencil className="h-3.5 w-3.5" /> Editar
+                        </Button>
+                        <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                          <Printer className="h-3.5 w-3.5" /> Imprimir
                         </Button>
                         <Button variant="outline" size="sm" className="px-3 text-destructive hover:text-destructive">
                           <Trash2 className="h-3.5 w-3.5" />
