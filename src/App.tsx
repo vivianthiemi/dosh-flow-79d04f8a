@@ -9,6 +9,7 @@ import PedidoV2 from "./pages/PedidoV2.tsx";
 import Pedidos from "./pages/Pedidos.tsx";
 import ProdutoMockup from "./pages/ProdutoMockup.tsx";
 import Loja from "./pages/Loja.tsx";
+import Login from "./pages/Login.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/pedidos" element={<Pedidos />} />
           <Route path="/produto-mockup" element={<ProdutoMockup />} />
           <Route path="/loja" element={<Loja />} />
+          <Route path="/login" element={<Login />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
