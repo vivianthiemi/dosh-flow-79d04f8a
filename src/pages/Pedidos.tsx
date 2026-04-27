@@ -161,9 +161,6 @@ const Pedidos = () => {
               <Search className="h-4 w-4" /> Filtros e busca
             </h2>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
-                <SlidersHorizontal className="h-3.5 w-3.5" /> Mais filtros
-              </Button>
               <Button variant="ghost" size="sm" className="text-xs">
                 Limpar
               </Button>
