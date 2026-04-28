@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Printer,
   MapPin,
+  TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import globoxLogo from "@/assets/globox-logo.png";
 
