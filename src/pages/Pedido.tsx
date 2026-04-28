@@ -56,6 +56,7 @@ const items = [
     qtd: 10,
     valorUnit: 7.08,
     valorTotal: 70.8,
+    custoUnit: 5.20,
   },
   {
     num: 2,
@@ -65,6 +66,7 @@ const items = [
     qtd: 10,
     valorUnit: 7.87,
     valorTotal: 78.7,
+    custoUnit: 5.85,
   },
 ];
 
