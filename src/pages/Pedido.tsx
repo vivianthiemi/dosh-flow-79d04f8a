@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Printer,
   MapPin,
+  TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import globoxLogo from "@/assets/globox-logo.png";
 
@@ -54,6 +56,7 @@ const items = [
     qtd: 10,
     valorUnit: 7.08,
     valorTotal: 70.8,
+    custoUnit: 5.20,
   },
   {
     num: 2,
@@ -63,6 +66,7 @@ const items = [
     qtd: 10,
     valorUnit: 7.87,
     valorTotal: 78.7,
+    custoUnit: 5.85,
   },
 ];
 
@@ -187,88 +191,187 @@ const Pedido = () => {
         </div>
 
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
-          <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
-            <Package className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
-              Itens do Pedido
-            </h2>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/30">
-                <TableHead className="w-12 text-center">#</TableHead>
-                <TableHead>Descrição</TableHead>
-                <TableHead>Código</TableHead>
-                <TableHead className="text-center">Un.</TableHead>
-                <TableHead className="text-center">Qtd.</TableHead>
-                <TableHead className="text-right">R$ Unit.</TableHead>
-                <TableHead className="text-right">R$ Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map((item) => (
-                <TableRow key={item.num}>
-                  <TableCell className="text-center font-medium">{item.num}</TableCell>
-                  <TableCell className="font-medium">{item.descricao}</TableCell>
-                  <TableCell className="text-muted-foreground text-xs font-mono">
-                    {item.codigo}
-                  </TableCell>
-                  <TableCell className="text-center">{item.un}</TableCell>
-                  <TableCell className="text-center font-medium">{item.qtd}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.valorUnit)}</TableCell>
-                  <TableCell className="text-right font-semibold">
-                    {formatCurrency(item.valorTotal)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={4} className="text-sm text-muted-foreground">
-                  Nº de itens: <strong>{totalItens}</strong> · Soma das Qtdes:{" "}
-                  <strong>{totalQtd}</strong>
-                </TableCell>
-                <TableCell colSpan={2} className="text-right text-sm font-medium">
-                  Total de Produtos
-                </TableCell>
-                <TableCell className="text-right font-semibold">
-                  {formatCurrency(totalProdutos)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
-                  Desconto
-                </TableCell>
-                <TableCell className="text-right text-destructive font-medium">
-                  − {formatCurrency(desconto)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
-                  Acréscimo
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  + {formatCurrency(acrescimo)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
-                  Frete (FOB)
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  + {formatCurrency(frete)}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={6} className="text-right text-sm font-bold">
-                  Total do Pedido
-                </TableCell>
-                <TableCell className="text-right text-lg font-bold text-primary">
-                  {formatCurrency(totalPedido)}
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
+          <Tabs defaultValue="itens" className="w-full">
+            <div className="flex items-center justify-between border-b border-border bg-primary/5 px-5 py-3 gap-4">
+              <div className="flex items-center gap-2">
+                <Package className="h-4 w-4 text-primary" />
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+                  Itens do Pedido
+                </h2>
+              </div>
+              <TabsList className="h-9">
+                <TabsTrigger value="itens" className="text-xs">
+                  <Package className="mr-1.5 h-3.5 w-3.5" /> Itens
+                </TabsTrigger>
+                <TabsTrigger value="cmv" className="text-xs">
+                  <TrendingUp className="mr-1.5 h-3.5 w-3.5" /> CMV & Margem
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="itens" className="mt-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="w-12 text-center">#</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead>Código</TableHead>
+                    <TableHead className="text-center">Un.</TableHead>
+                    <TableHead className="text-center">Qtd.</TableHead>
+                    <TableHead className="text-right">R$ Unit.</TableHead>
+                    <TableHead className="text-right">R$ Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {items.map((item) => (
+                    <TableRow key={item.num}>
+                      <TableCell className="text-center font-medium">{item.num}</TableCell>
+                      <TableCell className="font-medium">{item.descricao}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs font-mono">
+                        {item.codigo}
+                      </TableCell>
+                      <TableCell className="text-center">{item.un}</TableCell>
+                      <TableCell className="text-center font-medium">{item.qtd}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(item.valorUnit)}</TableCell>
+                      <TableCell className="text-right font-semibold">
+                        {formatCurrency(item.valorTotal)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-sm text-muted-foreground">
+                      Nº de itens: <strong>{totalItens}</strong> · Soma das Qtdes:{" "}
+                      <strong>{totalQtd}</strong>
+                    </TableCell>
+                    <TableCell colSpan={2} className="text-right text-sm font-medium">
+                      Total de Produtos
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {formatCurrency(totalProdutos)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                      Desconto
+                    </TableCell>
+                    <TableCell className="text-right text-destructive font-medium">
+                      − {formatCurrency(desconto)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                      Acréscimo
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      + {formatCurrency(acrescimo)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-right text-sm text-muted-foreground">
+                      Frete (FOB)
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      + {formatCurrency(frete)}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-right text-sm font-bold">
+                      Total do Pedido
+                    </TableCell>
+                    <TableCell className="text-right text-lg font-bold text-primary">
+                      {formatCurrency(totalPedido)}
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TabsContent>
+
+            <TabsContent value="cmv" className="mt-0">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/30">
+                    <TableHead className="w-12 text-center">#</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead className="text-center">Qtd.</TableHead>
+                    <TableHead className="text-right">Custo Unit.</TableHead>
+                    <TableHead className="text-right">Venda Unit.</TableHead>
+                    <TableHead className="text-right">CMV Total</TableHead>
+                    <TableHead className="text-right">Lucro</TableHead>
+                    <TableHead className="text-right">Margem</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {items.map((item) => {
+                    const cmvTotal = item.custoUnit * item.qtd;
+                    const lucro = item.valorTotal - cmvTotal;
+                    const margem = item.valorTotal > 0 ? (lucro / item.valorTotal) * 100 : 0;
+                    return (
+                      <TableRow key={item.num}>
+                        <TableCell className="text-center font-medium">{item.num}</TableCell>
+                        <TableCell className="font-medium">{item.descricao}</TableCell>
+                        <TableCell className="text-center">{item.qtd}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                          {formatCurrency(item.custoUnit)}
+                        </TableCell>
+                        <TableCell className="text-right">{formatCurrency(item.valorUnit)}</TableCell>
+                        <TableCell className="text-right">{formatCurrency(cmvTotal)}</TableCell>
+                        <TableCell className="text-right font-semibold text-emerald-600">
+                          {formatCurrency(lucro)}
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-emerald-600">
+                          {margem.toFixed(1)}%
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+
+              {(() => {
+                const custoTotal = items.reduce((s, i) => s + i.custoUnit * i.qtd, 0);
+                const lucroReal = totalProdutos - custoTotal;
+                const margemPct = totalProdutos > 0 ? (lucroReal / totalProdutos) * 100 : 0;
+                return (
+                  <div className="border-t border-border bg-muted/20 px-5 py-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
+                      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                        Margem Interna
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Custo dos itens</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatCurrency(custoTotal)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Total do pedido</p>
+                        <p className="text-sm font-semibold text-foreground">
+                          {formatCurrency(totalProdutos)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Lucro real</p>
+                        <p className="text-sm font-bold text-emerald-600">
+                          {formatCurrency(lucroReal)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Margem</p>
+                        <p className="text-sm font-bold text-emerald-600">
+                          {margemPct.toFixed(1)}%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Condições de Pagamento */}
