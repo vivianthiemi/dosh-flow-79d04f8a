@@ -11,6 +11,7 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CotacaoItem {
   id: string;
