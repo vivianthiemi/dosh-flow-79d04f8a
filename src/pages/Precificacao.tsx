@@ -272,7 +272,7 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11} className="text-center text-sm text-muted-foreground py-10">
+                    <TableCell colSpan={12} className="text-center text-sm text-muted-foreground py-10">
                       Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
@@ -295,6 +295,7 @@ const Precificacao = () => {
                     <TableCell className="text-right font-bold text-emerald-600">
                       {formatCurrency(totais.venda)}
                     </TableCell>
+                    <TableCell />
                     <TableCell />
                   </TableRow>
                 </TableFooter>
