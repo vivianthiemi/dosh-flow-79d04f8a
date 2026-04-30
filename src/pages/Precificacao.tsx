@@ -12,6 +12,7 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { CurrencyInput } from "@/components/CurrencyInput";
 
 interface CotacaoItem {
   id: string;
@@ -234,6 +235,7 @@ const Precificacao = () => {
                           type="number"
                           min={0}
                           value={it.qtd}
+                          onFocus={(e) => e.currentTarget.select()}
                           onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
@@ -243,6 +245,7 @@ const Precificacao = () => {
                           type="number"
                           min={1}
                           value={it.qtdBox}
+                          onFocus={(e) => e.currentTarget.select()}
                           onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
@@ -251,25 +254,17 @@ const Precificacao = () => {
                         {unidades}
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.01"
-                          value={Number((it.valorUnit * it.qtdBox).toFixed(2))}
-                          onChange={(e) => updateValorCaixa(it.id, Number(e.target.value) || 0)}
-                          className="h-9 w-24 text-right"
-                          placeholder="0,00"
+                        <CurrencyInput
+                          value={it.valorUnit * it.qtdBox}
+                          onChange={(v) => updateValorCaixa(it.id, v)}
+                          className="w-28"
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.01"
-                          value={Number(it.valorUnit.toFixed(4))}
-                          onChange={(e) => updateItem(it.id, "valorUnit", Number(e.target.value) || 0)}
-                          className="h-9 w-24 text-right"
-                          placeholder="0,00"
+                        <CurrencyInput
+                          value={it.valorUnit}
+                          onChange={(v) => updateItem(it.id, "valorUnit", v)}
+                          className="w-28"
                         />
                       </TableCell>
                       <TableCell className="text-right font-semibold">
@@ -282,8 +277,9 @@ const Precificacao = () => {
                             min={0}
                             step="0.1"
                             value={it.margem}
+                            onFocus={(e) => e.currentTarget.select()}
                             onChange={(e) => updateItem(it.id, "margem", Number(e.target.value) || 0)}
-                            className="h-9 w-24 pr-7 text-right"
+                            className="h-9 w-24 pr-7 text-right tabular-nums"
                           />
                           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
                             %
@@ -379,19 +375,11 @@ const Precificacao = () => {
                   <Icon className="h-3.5 w-3.5" />
                   {label}
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                    R$
-                  </span>
-                  <Input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={despesas[key]}
-                    onChange={(e) => updateDespesa(key, Number(e.target.value) || 0)}
-                    className="h-10 pl-9 text-right font-medium"
-                  />
-                </div>
+                <CurrencyInput
+                  value={despesas[key]}
+                  onChange={(v) => updateDespesa(key, v)}
+                  className="h-10 font-medium"
+                />
               </div>
             ))}
           </div>
