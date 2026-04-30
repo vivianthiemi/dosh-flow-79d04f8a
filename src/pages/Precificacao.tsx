@@ -451,9 +451,6 @@ const Precificacao = () => {
               <span className="text-xs uppercase tracking-wider font-medium">Custo total</span>
             </div>
             <p className="text-2xl font-bold text-foreground">{formatCurrency(custoTotalReal)}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Itens {formatCurrency(totais.custo)} + desp. {formatCurrency(totalDespesas)}
-            </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
