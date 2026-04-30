@@ -186,6 +186,7 @@ const Precificacao = () => {
                   <TableHead className="text-center">Qtd. (caixas)</TableHead>
                   <TableHead className="text-center">Un. / Box</TableHead>
                   <TableHead className="text-center">Qtd. Total</TableHead>
+                  <TableHead className="text-right">R$ Caixa</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
                   <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
