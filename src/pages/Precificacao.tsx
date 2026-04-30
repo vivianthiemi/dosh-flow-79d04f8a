@@ -108,7 +108,6 @@ const Precificacao = () => {
   // Custo por fornecedor — despesas de viagem são rateadas por unidade
   // (despesa total ÷ total de unidades). Cada fornecedor recebe a soma
   // proporcional à quantidade de unidades que fornece.
-  const despesaPorUnidade = totais.qtd > 0 ? totalDespesas / totais.qtd : 0;
   const custoPorFornecedor = (() => {
     const map = new Map<string, { custoItens: number; qtdItens: number; qtdUnidades: number }>();
     items.forEach((it) => {
