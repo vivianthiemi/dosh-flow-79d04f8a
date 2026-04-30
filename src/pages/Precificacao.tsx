@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent, Info } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent, Info, ChevronDown, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,6 +60,11 @@ const Precificacao = () => {
     pedagio: 0,
   });
 
+  // Estado de colapso por fornecedor (true = recolhido)
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const toggleCollapsed = (key: string) =>
+    setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+
   const updateDespesa = (field: keyof typeof despesas, value: number) =>
     setDespesas((prev) => ({ ...prev, [field]: value }));
 
@@ -84,9 +89,29 @@ const Precificacao = () => {
     );
   };
 
-  const addItem = () => setItems((prev) => [...prev, novoItem()]);
+  const addItem = (fornecedor = "") =>
+    setItems((prev) => [...prev, { ...novoItem(), fornecedor }]);
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
+
+  // Renomeia o fornecedor em todos os itens dele
+  const renameFornecedor = (oldName: string, newName: string) => {
+    setItems((prev) =>
+      prev.map((it) => (it.fornecedor === oldName ? { ...it, fornecedor: newName } : it)),
+    );
+  };
+
+  // Adiciona um novo bloco de fornecedor (com 1 item vazio para começar)
+  const addFornecedor = () => {
+    // Gera nome único "Novo fornecedor" / " 2" / " 3" ...
+    const base = "Novo fornecedor";
+    const existing = new Set(items.map((it) => it.fornecedor));
+    let name = base;
+    let i = 2;
+    while (existing.has(name)) name = `${base} ${i++}`;
+    setItems((prev) => [...prev, { ...novoItem(), fornecedor: name }]);
+    setCollapsed((prev) => ({ ...prev, [name]: false }));
+  };
 
   // Qtd. = nº de caixas; QtdBox = unidades por caixa
   const calcUnidades = (it: CotacaoItem) => it.qtd * it.qtdBox;
@@ -122,7 +147,7 @@ const Precificacao = () => {
   // Custo por fornecedor — despesas de viagem são rateadas por unidade
   // (despesa total ÷ total de unidades). Cada fornecedor recebe a soma
   // proporcional à quantidade de unidades que fornece.
-  const custoPorFornecedor = (() => {
+  const custoPorFornecedor = useMemo(() => {
     const map = new Map<string, { custoItens: number; qtdItens: number; qtdUnidades: number }>();
     items.forEach((it) => {
       const key = it.fornecedor || "Sem fornecedor";
@@ -142,7 +167,23 @@ const Precificacao = () => {
         custoTotal: v.custoItens + despesaPorUnidade * v.qtdUnidades,
       }))
       .sort((a, b) => b.custoTotal - a.custoTotal);
-  })();
+  }, [items, despesaPorUnidade]);
+
+  // Itens agrupados por fornecedor (preserva ordem de aparição)
+  const itemsPorFornecedor = useMemo(() => {
+    const groups = new Map<string, CotacaoItem[]>();
+    items.forEach((it) => {
+      const key = it.fornecedor || "Sem fornecedor";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(it);
+    });
+    return Array.from(groups.entries()).map(([fornecedor, list]) => {
+      const custoItens = list.reduce((s, it) => s + calcTotal(it), 0);
+      const unidades = list.reduce((s, it) => s + calcUnidades(it), 0);
+      const venda = list.reduce((s, it) => s + calcVenda(it) * calcUnidades(it), 0);
+      return { fornecedor, items: list, custoItens, unidades, venda };
+    });
+  }, [items, despesaPorUnidade]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -161,196 +202,419 @@ const Precificacao = () => {
               </p>
             </div>
           </div>
-          <Button onClick={addItem} size="sm">
-            <Plus className="mr-1 h-4 w-4" /> Adicionar item
+          <Button onClick={addFornecedor} size="sm">
+            <Plus className="mr-1 h-4 w-4" /> Novo fornecedor
           </Button>
         </div>
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
-        {/* Tabela */}
-        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
-          <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
-            <Package className="h-4 w-4 text-primary" />
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
-              Itens em cotação
-            </h2>
+        {/* Itens agrupados por fornecedor */}
+        {itemsPorFornecedor.length === 0 && (
+          <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
+            <Store className="mx-auto h-8 w-8 text-muted-foreground/60 mb-3" />
+            <p className="text-sm text-muted-foreground mb-4">
+              Nenhum fornecedor adicionado ainda.
+            </p>
+            <Button onClick={addFornecedor} size="sm">
+              <Plus className="mr-1 h-4 w-4" /> Adicionar primeiro fornecedor
+            </Button>
           </div>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/30">
-                  <TableHead className="w-12 text-center">#</TableHead>
-                  <TableHead className="min-w-[100px]">Cód.</TableHead>
-                  <TableHead className="min-w-[220px]">Descrição</TableHead>
-                  <TableHead className="min-w-[140px]">Marca</TableHead>
-                  <TableHead className="text-center">Qtd. (caixas)</TableHead>
-                  <TableHead className="text-center">Un. / Box</TableHead>
-                  <TableHead className="text-center">Qtd. Total</TableHead>
-                  <TableHead className="text-right">R$ Caixa</TableHead>
-                  <TableHead className="text-right">R$ Un.</TableHead>
-                  <TableHead className="text-right">R$ Total</TableHead>
-                  <TableHead className="text-center">Margem</TableHead>
-                  <TableHead className="text-right">R$ Venda</TableHead>
-                  <TableHead className="min-w-[140px]">Fornecedor</TableHead>
-                  <TableHead className="w-12" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.map((it, idx) => {
-                  const total = calcTotal(it);
-                  const unidades = calcUnidades(it);
-                  const venda = calcVenda(it);
-                  return (
-                    <TableRow key={it.id}>
-                      <TableCell className="text-center text-muted-foreground font-medium">
-                        {idx + 1}
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={it.codigo}
-                          placeholder="Cód."
-                          onChange={(e) => updateItem(it.id, "codigo", e.target.value)}
-                          className="h-9 font-mono text-xs"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={it.nome}
-                          placeholder="Descrição do item"
-                          onChange={(e) => updateItem(it.id, "nome", e.target.value)}
-                          className="h-9"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={it.marca}
-                          placeholder="Marca"
-                          onChange={(e) => updateItem(it.id, "marca", e.target.value)}
-                          className="h-9"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          min={0}
-                          value={it.qtd}
-                          onFocus={(e) => e.currentTarget.select()}
-                          onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
-                          className="h-9 w-20 text-center"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          min={1}
-                          value={it.qtdBox}
-                          onFocus={(e) => e.currentTarget.select()}
-                          onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
-                          className="h-9 w-20 text-center"
-                        />
-                      </TableCell>
-                      <TableCell className="text-center font-semibold tabular-nums">
-                        {unidades}
-                      </TableCell>
-                      <TableCell>
-                        <CurrencyInput
-                          value={it.valorUnit * it.qtdBox}
-                          onChange={(v) => updateValorCaixa(it.id, v)}
-                          className="w-28"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <CurrencyInput
-                          value={it.valorUnit}
-                          onChange={(v) => updateItem(it.id, "valorUnit", v)}
-                          className="w-28"
-                        />
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(total)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="relative">
-                          <Input
-                            type="number"
-                            min={0}
-                            step="0.1"
-                            value={it.margem}
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={(e) => updateItem(it.id, "margem", Number(e.target.value) || 0)}
-                            className="h-9 w-24 pr-7 text-right tabular-nums"
-                          />
-                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                            %
-                          </span>
+        )}
+
+        {itemsPorFornecedor.map((grupo) => {
+          const isCollapsed = !!collapsed[grupo.fornecedor];
+          const margemGrupo =
+            grupo.venda > 0 ? ((grupo.venda - grupo.custoItens) / grupo.venda) * 100 : 0;
+          return (
+            <div
+              key={grupo.fornecedor}
+              className="rounded-xl border border-border bg-card shadow-sm overflow-hidden"
+            >
+              {/* Header do bloco — clicável para colapsar */}
+              <div className="border-b border-border bg-muted/30">
+                <div className="flex items-center gap-2 px-3 sm:px-5 py-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleCollapsed(grupo.fornecedor)}
+                    aria-label={isCollapsed ? "Expandir" : "Recolher"}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md hover:bg-muted transition-colors"
+                  >
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        isCollapsed ? "-rotate-90" : ""
+                      }`}
+                    />
+                  </button>
+                  <Store className="h-4 w-4 text-primary shrink-0" />
+                  <Input
+                    value={grupo.fornecedor}
+                    onChange={(e) => renameFornecedor(grupo.fornecedor, e.target.value)}
+                    placeholder="Nome do fornecedor"
+                    className="h-9 max-w-xs border-transparent bg-transparent font-semibold focus:border-input focus:bg-background"
+                  />
+                  <div className="ml-auto hidden sm:flex items-center gap-4 text-xs">
+                    <div className="flex flex-col items-end">
+                      <span className="text-muted-foreground">Itens</span>
+                      <span className="font-semibold tabular-nums">{grupo.items.length}</span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-muted-foreground">Unidades</span>
+                      <span className="font-semibold tabular-nums">{grupo.unidades}</span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-muted-foreground">Custo</span>
+                      <span className="font-bold tabular-nums">
+                        {formatCurrency(grupo.custoItens)}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-muted-foreground">Venda</span>
+                      <span className="font-bold text-emerald-600 tabular-nums">
+                        {formatCurrency(grupo.venda)}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-muted-foreground">Margem</span>
+                      <span className="font-semibold text-emerald-600 tabular-nums">
+                        {margemGrupo.toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {/* KPIs compactos para mobile */}
+                <div className="flex sm:hidden items-center justify-between gap-3 px-3 pb-3 text-xs">
+                  <div className="flex flex-col">
+                    <span className="text-muted-foreground">Itens · Un.</span>
+                    <span className="font-semibold tabular-nums">
+                      {grupo.items.length} · {grupo.unidades}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-muted-foreground">Custo</span>
+                    <span className="font-bold tabular-nums">
+                      {formatCurrency(grupo.custoItens)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-muted-foreground">Venda</span>
+                    <span className="font-bold text-emerald-600 tabular-nums">
+                      {formatCurrency(grupo.venda)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {!isCollapsed && (
+                <>
+                  {/* DESKTOP: tabela enxuta (sem coluna Fornecedor) */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-muted/10">
+                          <TableHead className="w-10 text-center">#</TableHead>
+                          <TableHead className="min-w-[100px]">Cód.</TableHead>
+                          <TableHead className="min-w-[200px]">Descrição</TableHead>
+                          <TableHead className="min-w-[120px]">Marca</TableHead>
+                          <TableHead className="text-center">Cx.</TableHead>
+                          <TableHead className="text-center">Un./Cx</TableHead>
+                          <TableHead className="text-center">Qtd. Total</TableHead>
+                          <TableHead className="text-right">R$ Caixa</TableHead>
+                          <TableHead className="text-right">R$ Un.</TableHead>
+                          <TableHead className="text-right">R$ Total</TableHead>
+                          <TableHead className="text-center">Margem</TableHead>
+                          <TableHead className="text-right">R$ Venda</TableHead>
+                          <TableHead className="w-10" />
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {grupo.items.map((it, idx) => {
+                          const total = calcTotal(it);
+                          const unidades = calcUnidades(it);
+                          const venda = calcVenda(it);
+                          return (
+                            <TableRow key={it.id}>
+                              <TableCell className="text-center text-muted-foreground font-medium">
+                                {idx + 1}
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  value={it.codigo}
+                                  placeholder="Cód."
+                                  onChange={(e) => updateItem(it.id, "codigo", e.target.value)}
+                                  className="h-9 font-mono text-xs"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  value={it.nome}
+                                  placeholder="Descrição"
+                                  onChange={(e) => updateItem(it.id, "nome", e.target.value)}
+                                  className="h-9"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  value={it.marca}
+                                  placeholder="Marca"
+                                  onChange={(e) => updateItem(it.id, "marca", e.target.value)}
+                                  className="h-9"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  value={it.qtd}
+                                  onFocus={(e) => e.currentTarget.select()}
+                                  onChange={(e) =>
+                                    updateItem(it.id, "qtd", Number(e.target.value) || 0)
+                                  }
+                                  className="h-9 w-16 text-center"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  min={1}
+                                  value={it.qtdBox}
+                                  onFocus={(e) => e.currentTarget.select()}
+                                  onChange={(e) =>
+                                    updateItem(it.id, "qtdBox", Number(e.target.value) || 0)
+                                  }
+                                  className="h-9 w-16 text-center"
+                                />
+                              </TableCell>
+                              <TableCell className="text-center font-semibold tabular-nums">
+                                {unidades}
+                              </TableCell>
+                              <TableCell>
+                                <CurrencyInput
+                                  value={it.valorUnit * it.qtdBox}
+                                  onChange={(v) => updateValorCaixa(it.id, v)}
+                                  className="w-28"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <CurrencyInput
+                                  value={it.valorUnit}
+                                  onChange={(v) => updateItem(it.id, "valorUnit", v)}
+                                  className="w-28"
+                                />
+                              </TableCell>
+                              <TableCell className="text-right font-semibold tabular-nums">
+                                {formatCurrency(total)}
+                              </TableCell>
+                              <TableCell>
+                                <div className="relative">
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="0.1"
+                                    value={it.margem}
+                                    onFocus={(e) => e.currentTarget.select()}
+                                    onChange={(e) =>
+                                      updateItem(it.id, "margem", Number(e.target.value) || 0)
+                                    }
+                                    className="h-9 w-20 pr-6 text-right tabular-nums"
+                                  />
+                                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                                    %
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right font-bold text-emerald-600 tabular-nums">
+                                {formatCurrency(venda)}
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                  onClick={() => removeItem(it.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* MOBILE: cards verticais por item */}
+                  <div className="md:hidden divide-y divide-border">
+                    {grupo.items.map((it, idx) => {
+                      const total = calcTotal(it);
+                      const unidades = calcUnidades(it);
+                      const venda = calcVenda(it);
+                      return (
+                        <div key={it.id} className="p-3 space-y-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-semibold text-muted-foreground">
+                              Item #{idx + 1}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                              onClick={() => removeItem(it.id)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="col-span-2">
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Descrição
+                              </label>
+                              <Input
+                                value={it.nome}
+                                placeholder="Descrição do item"
+                                onChange={(e) => updateItem(it.id, "nome", e.target.value)}
+                                className="h-9"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Código
+                              </label>
+                              <Input
+                                value={it.codigo}
+                                placeholder="Cód."
+                                onChange={(e) => updateItem(it.id, "codigo", e.target.value)}
+                                className="h-9 font-mono text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Marca
+                              </label>
+                              <Input
+                                value={it.marca}
+                                placeholder="Marca"
+                                onChange={(e) => updateItem(it.id, "marca", e.target.value)}
+                                className="h-9"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Caixas
+                              </label>
+                              <Input
+                                type="number"
+                                min={0}
+                                value={it.qtd}
+                                onFocus={(e) => e.currentTarget.select()}
+                                onChange={(e) =>
+                                  updateItem(it.id, "qtd", Number(e.target.value) || 0)
+                                }
+                                className="h-9 text-center"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Un. / Caixa
+                              </label>
+                              <Input
+                                type="number"
+                                min={1}
+                                value={it.qtdBox}
+                                onFocus={(e) => e.currentTarget.select()}
+                                onChange={(e) =>
+                                  updateItem(it.id, "qtdBox", Number(e.target.value) || 0)
+                                }
+                                className="h-9 text-center"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                R$ Caixa
+                              </label>
+                              <CurrencyInput
+                                value={it.valorUnit * it.qtdBox}
+                                onChange={(v) => updateValorCaixa(it.id, v)}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                R$ Un.
+                              </label>
+                              <CurrencyInput
+                                value={it.valorUnit}
+                                onChange={(v) => updateItem(it.id, "valorUnit", v)}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Margem
+                              </label>
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  step="0.1"
+                                  value={it.margem}
+                                  onFocus={(e) => e.currentTarget.select()}
+                                  onChange={(e) =>
+                                    updateItem(it.id, "margem", Number(e.target.value) || 0)
+                                  }
+                                  className="h-9 pr-7 text-right tabular-nums"
+                                />
+                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex flex-col justify-end">
+                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Qtd. Total
+                              </span>
+                              <span className="text-base font-bold tabular-nums">
+                                {unidades}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/60">
+                            <div>
+                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                Custo total
+                              </span>
+                              <p className="text-sm font-bold tabular-nums">
+                                {formatCurrency(total)}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                R$ Venda / un.
+                              </span>
+                              <p className="text-sm font-bold text-emerald-600 tabular-nums">
+                                {formatCurrency(venda)}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-right font-bold text-emerald-600">
-                        {formatCurrency(venda)}
-                      </TableCell>
-                      <TableCell>
-                        <Input
-                          value={it.fornecedor}
-                          placeholder="Fornecedor"
-                          onChange={(e) => updateItem(it.id, "fornecedor", e.target.value)}
-                          className="h-9"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                          onClick={() => removeItem(it.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {items.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={14} className="text-center text-sm text-muted-foreground py-10">
-                      Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-              {items.length > 0 && (() => {
-                const margemItens = totais.venda > 0 ? ((totais.venda - totais.custo) / totais.venda) * 100 : 0;
-                return (
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell colSpan={4} className="text-sm text-muted-foreground">
-                        Total: <strong>{items.length}</strong> itens
-                      </TableCell>
-                      <TableCell className="text-center font-semibold tabular-nums">
-                        {items.reduce((s, it) => s + it.qtd, 0)}
-                      </TableCell>
-                      <TableCell />
-                      <TableCell className="text-center font-bold tabular-nums">{totais.qtd}</TableCell>
-                      <TableCell />
-                      <TableCell />
-                      <TableCell className="text-right font-bold">
-                        {formatCurrency(totais.custo)}
-                      </TableCell>
-                      <TableCell className="text-center text-sm font-medium text-emerald-600">
-                        {margemItens.toFixed(1)}%
-                      </TableCell>
-                      <TableCell className="text-right font-bold text-emerald-600">
-                        {formatCurrency(totais.venda)}
-                      </TableCell>
-                      <TableCell />
-                      <TableCell />
-                    </TableRow>
-                  </TableFooter>
-                );
-              })()}
-            </Table>
-          </div>
-        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Botão para adicionar item neste fornecedor */}
+                  <div className="border-t border-border bg-muted/20 px-3 sm:px-5 py-2.5">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => addItem(grupo.fornecedor)}
+                      className="text-xs"
+                    >
+                      <Plus className="mr-1 h-3.5 w-3.5" /> Adicionar item neste fornecedor
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
 
         {/* Custos da Viagem */}
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
@@ -609,8 +873,8 @@ const Precificacao = () => {
         </section>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={addItem}>
-            <Plus className="mr-1 h-4 w-4" /> Adicionar item
+          <Button variant="outline" onClick={addFornecedor}>
+            <Plus className="mr-1 h-4 w-4" /> Novo fornecedor
           </Button>
           <Button>Salvar cotação</Button>
         </div>
