@@ -72,6 +72,17 @@ const Precificacao = () => {
     );
   };
 
+  // Atualiza valorUnit a partir do valor da caixa (R$ caixa ÷ Un./Box)
+  const updateValorCaixa = (id: string, valorCaixa: number) => {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === id
+          ? { ...it, valorUnit: it.qtdBox > 0 ? valorCaixa / it.qtdBox : 0 }
+          : it,
+      ),
+    );
+  };
+
   const addItem = () => setItems((prev) => [...prev, novoItem()]);
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
