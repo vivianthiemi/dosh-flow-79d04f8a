@@ -316,7 +316,7 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={13} className="text-center text-sm text-muted-foreground py-10">
+                    <TableCell colSpan={14} className="text-center text-sm text-muted-foreground py-10">
                       Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
