@@ -147,7 +147,7 @@ const Precificacao = () => {
   // Custo por fornecedor — despesas de viagem são rateadas por unidade
   // (despesa total ÷ total de unidades). Cada fornecedor recebe a soma
   // proporcional à quantidade de unidades que fornece.
-  const custoPorFornecedor = (() => {
+  const custoPorFornecedor = useMemo(() => {
     const map = new Map<string, { custoItens: number; qtdItens: number; qtdUnidades: number }>();
     items.forEach((it) => {
       const key = it.fornecedor || "Sem fornecedor";
@@ -167,7 +167,23 @@ const Precificacao = () => {
         custoTotal: v.custoItens + despesaPorUnidade * v.qtdUnidades,
       }))
       .sort((a, b) => b.custoTotal - a.custoTotal);
-  })();
+  }, [items, despesaPorUnidade]);
+
+  // Itens agrupados por fornecedor (preserva ordem de aparição)
+  const itemsPorFornecedor = useMemo(() => {
+    const groups = new Map<string, CotacaoItem[]>();
+    items.forEach((it) => {
+      const key = it.fornecedor || "Sem fornecedor";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(it);
+    });
+    return Array.from(groups.entries()).map(([fornecedor, list]) => {
+      const custoItens = list.reduce((s, it) => s + calcTotal(it), 0);
+      const unidades = list.reduce((s, it) => s + calcUnidades(it), 0);
+      const venda = list.reduce((s, it) => s + calcVenda(it) * calcUnidades(it), 0);
+      return { fornecedor, items: list, custoItens, unidades, venda };
+    });
+  }, [items, despesaPorUnidade]);
 
   return (
     <div className="min-h-screen bg-background">
