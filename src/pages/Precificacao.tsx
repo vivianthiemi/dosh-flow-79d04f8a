@@ -16,11 +16,12 @@ interface CotacaoItem {
   id: string;
   codigo: string;
   nome: string;
-  linha: string;
+  marca: string;
   qtdBox: number;
   qtd: number;
   valorUnit: number;
   margem: number;
+  fornecedor: string;
 }
 
 const formatCurrency = (v: number) =>
@@ -30,23 +31,24 @@ const novoItem = (): CotacaoItem => ({
   id: crypto.randomUUID(),
   codigo: "",
   nome: "",
-  linha: "",
+  marca: "",
   qtdBox: 1,
   qtd: 1,
   valorUnit: 0,
   margem: 30,
+  fornecedor: "",
 });
 
 const Precificacao = () => {
   const [items, setItems] = useState<CotacaoItem[]>([
-    { id: crypto.randomUUID(), codigo: "SL12", nome: "Amor MM5+ Cilios Posticos - 5DCilios", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 9.20, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "SP 2155", nome: "Kit e Esponja", linha: "Ss", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "MOC 2353", nome: "Lip Oil Stawbery", linha: "Moc MAllure", qtdBox: 12, qtd: 12, valorUnit: 10.50, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "HL6185", nome: "Lip Oil Unicornio", linha: "Hold Morning", qtdBox: 12, qtd: 12, valorUnit: 8.40, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "MM087", nome: "Esponja Chanfrada", linha: "Mandala", qtdBox: 12, qtd: 12, valorUnit: 1.35, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "FR052", nome: "Paleta de sombra Eye Lux", linha: "Femme Paris", qtdBox: 24, qtd: 24, valorUnit: 5.30, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "YL151", nome: "Mascara Cilios", linha: "Yalanni", qtdBox: 12, qtd: 12, valorUnit: 4.60, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "SL12", nome: "Amor MM5+ Cilios Posticos - 5DCilios", marca: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 9.20, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "SP 2155", nome: "Kit e Esponja", marca: "Ss", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "MOC 2353", nome: "Lip Oil Stawbery", marca: "Moc MAllure", qtdBox: 12, qtd: 12, valorUnit: 10.50, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "HL6185", nome: "Lip Oil Unicornio", marca: "Hold Morning", qtdBox: 12, qtd: 12, valorUnit: 8.40, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "MM087", nome: "Esponja Chanfrada", marca: "Mandala", qtdBox: 12, qtd: 12, valorUnit: 1.35, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "FR052", nome: "Paleta de sombra Eye Lux", marca: "Femme Paris", qtdBox: 24, qtd: 24, valorUnit: 5.30, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "YL151", nome: "Mascara Cilios", marca: "Yalanni", qtdBox: 12, qtd: 12, valorUnit: 4.60, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", marca: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30, fornecedor: "Seven" },
   ]);
 
   const updateItem = <K extends keyof CotacaoItem>(
