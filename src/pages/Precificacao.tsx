@@ -422,56 +422,128 @@ const Precificacao = () => {
           </div>
         )}
 
-        {/* Totalização (cards no final) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Package className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
-            </div>
-            <div className="flex items-baseline gap-1.5">
-              <p className="text-2xl font-bold text-foreground leading-none">{items.length}</p>
-              <span className="text-xs text-muted-foreground">itens</span>
-              <span className="text-muted-foreground/50 mx-1">·</span>
-              <p className="text-base font-semibold text-foreground leading-none">{totais.qtd}</p>
-              <span className="text-xs text-muted-foreground">un</span>
-            </div>
-            <div className="mt-3 pt-2 border-t border-border/60">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Rateio por unidade</span>
-                <span className="text-sm font-semibold text-foreground">
+        {/* Totalização — fechamento da cotação */}
+        <section aria-label="Totalização da cotação" className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Calculator className="h-4 w-4 text-muted-foreground" />
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Fechamento
+            </h2>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Itens cotados */}
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                  Itens cotados
+                </span>
+                <div className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center">
+                  <Package className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+              </div>
+              <div className="flex items-baseline gap-1.5">
+                <p className="text-3xl font-bold text-foreground leading-none tabular-nums">
+                  {items.length}
+                </p>
+                <span className="text-sm text-muted-foreground">SKUs</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {totais.qtd} unidades no total
+              </p>
+              <div className="mt-auto pt-3 mt-3 border-t border-border/60 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Rateio / unidade</span>
+                <span className="text-sm font-semibold text-foreground tabular-nums">
                   {formatCurrency(despesaPorUnidade)}
                 </span>
               </div>
             </div>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <DollarSign className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Custo total</span>
+
+            {/* Custo total */}
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                  Custo total
+                </span>
+                <div className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center">
+                  <Wallet className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-foreground leading-none tabular-nums">
+                {formatCurrency(custoTotalReal)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Itens + despesas</p>
             </div>
-            <p className="text-2xl font-bold text-foreground">{formatCurrency(custoTotalReal)}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Venda prevista</span>
+
+            {/* Venda prevista */}
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                  Venda prevista
+                </span>
+                <div className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center">
+                  <ShoppingCart className="h-3.5 w-3.5 text-muted-foreground" />
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-foreground leading-none tabular-nums">
+                {formatCurrency(totais.venda)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Receita projetada</p>
             </div>
-            <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totais.venda)}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Margem real</span>
+
+            {/* Margem real — destaque do resultado */}
+            <div
+              className={`rounded-xl border p-4 shadow-sm flex flex-col ${
+                lucroPrev >= 0
+                  ? "border-emerald-200 bg-emerald-50/50 dark:border-emerald-900/50 dark:bg-emerald-950/20"
+                  : "border-destructive/30 bg-destructive/5"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span
+                  className={`text-xs uppercase tracking-wider font-medium ${
+                    lucroPrev >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-destructive"
+                  }`}
+                >
+                  Margem real
+                </span>
+                <div
+                  className={`h-7 w-7 rounded-lg flex items-center justify-center ${
+                    lucroPrev >= 0
+                      ? "bg-emerald-100 dark:bg-emerald-900/40"
+                      : "bg-destructive/10"
+                  }`}
+                >
+                  {lucroPrev >= 0 ? (
+                    <TrendingUp className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
+                  ) : (
+                    <Percent className="h-3.5 w-3.5 text-destructive" />
+                  )}
+                </div>
+              </div>
+              <p
+                className={`text-3xl font-bold leading-none tabular-nums ${
+                  lucroPrev >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-destructive"
+                }`}
+              >
+                {margemMedia.toFixed(1)}%
+              </p>
+              <div className="mt-auto pt-3 mt-3 border-t border-border/60 flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  {lucroPrev >= 0 ? "Lucro" : "Prejuízo"}
+                </span>
+                <span
+                  className={`text-sm font-semibold tabular-nums ${
+                    lucroPrev >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-destructive"
+                  }`}
+                >
+                  {formatCurrency(Math.abs(lucroPrev))}
+                </span>
+              </div>
             </div>
-            <p className={`text-2xl font-bold ${lucroPrev >= 0 ? "text-emerald-600" : "text-destructive"}`}>
-              {margemMedia.toFixed(1)}%
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Lucro {formatCurrency(lucroPrev)}
-            </p>
           </div>
-        </div>
+        </section>
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={addItem}>
