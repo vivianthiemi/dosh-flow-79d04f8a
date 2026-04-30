@@ -147,40 +147,6 @@ const Precificacao = () => {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
-        {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <Package className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">{items.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{totais.qtd} unidades</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <DollarSign className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Custo total</span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">{formatCurrency(totais.custo)}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Venda prevista</span>
-            </div>
-            <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totais.venda)}</p>
-          </div>
-          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">Margem média</span>
-            </div>
-            <p className="text-2xl font-bold text-emerald-600">{margemMedia.toFixed(1)}%</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Lucro {formatCurrency(lucroPrev)}</p>
-          </div>
-        </div>
-
         {/* Tabela */}
         <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
