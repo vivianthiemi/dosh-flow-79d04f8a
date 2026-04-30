@@ -277,8 +277,9 @@ const Precificacao = () => {
                             min={0}
                             step="0.1"
                             value={it.margem}
+                            onFocus={(e) => e.currentTarget.select()}
                             onChange={(e) => updateItem(it.id, "margem", Number(e.target.value) || 0)}
-                            className="h-9 w-24 pr-7 text-right"
+                            className="h-9 w-24 pr-7 text-right tabular-nums"
                           />
                           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
                             %
