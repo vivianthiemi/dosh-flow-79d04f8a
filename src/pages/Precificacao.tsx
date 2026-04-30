@@ -440,11 +440,11 @@ const Precificacao = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Itens cotados */}
+            {/* Unidades cotadas */}
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
-                  Itens cotados
+                  Unidades cotadas
                 </span>
                 <div className="h-7 w-7 rounded-lg bg-muted flex items-center justify-center">
                   <Package className="h-3.5 w-3.5 text-muted-foreground" />
@@ -452,12 +452,12 @@ const Precificacao = () => {
               </div>
               <div className="flex items-baseline gap-1.5">
                 <p className="text-3xl font-bold text-foreground leading-none tabular-nums">
-                  {items.length}
+                  {totais.qtd}
                 </p>
-                <span className="text-sm text-muted-foreground">SKUs</span>
+                <span className="text-sm text-muted-foreground">unidades</span>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {totais.qtd} unidades no total
+                em {items.length} {items.length === 1 ? "SKU" : "SKUs"}
               </p>
               <div className="mt-auto pt-3 mt-3 border-t border-border/60 flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Rateio / unidade</span>
