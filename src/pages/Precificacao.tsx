@@ -14,12 +14,13 @@ import {
 
 interface CotacaoItem {
   id: string;
+  codigo: string;
   nome: string;
+  linha: string;
   qtdBox: number;
   qtd: number;
   valorUnit: number;
   margem: number;
-  fornecedor: string;
 }
 
 const formatCurrency = (v: number) =>
@@ -27,34 +28,25 @@ const formatCurrency = (v: number) =>
 
 const novoItem = (): CotacaoItem => ({
   id: crypto.randomUUID(),
+  codigo: "",
   nome: "",
+  linha: "",
   qtdBox: 1,
   qtd: 1,
   valorUnit: 0,
   margem: 30,
-  fornecedor: "",
 });
 
 const Precificacao = () => {
   const [items, setItems] = useState<CotacaoItem[]>([
-    {
-      id: crypto.randomUUID(),
-      nome: "Body Splash Maracujá 200ml",
-      qtdBox: 12,
-      qtd: 24,
-      valorUnit: 5.20,
-      margem: 35,
-      fornecedor: "Dermachem Lab",
-    },
-    {
-      id: crypto.randomUUID(),
-      nome: "Hidratante Puro Leite 250ml",
-      qtdBox: 6,
-      qtd: 12,
-      valorUnit: 7.80,
-      margem: 40,
-      fornecedor: "Nelo Cosméticos",
-    },
+    { id: crypto.randomUUID(), codigo: "SL12", nome: "Amor MM5+ Cilios Posticos - 5DCilios", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 9.20, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "SP 2155", nome: "Kit e Esponja", linha: "Ss", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "MOC 2353", nome: "Lip Oil Stawbery", linha: "Moc MAllure", qtdBox: 12, qtd: 12, valorUnit: 10.50, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "HL6185", nome: "Lip Oil Unicornio", linha: "Hold Morning", qtdBox: 12, qtd: 12, valorUnit: 8.40, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "MM087", nome: "Esponja Chanfrada", linha: "Mandala", qtdBox: 12, qtd: 12, valorUnit: 1.35, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "FR052", nome: "Paleta de sombra Eye Lux", linha: "Femme Paris", qtdBox: 24, qtd: 24, valorUnit: 5.30, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "YL151", nome: "Mascara Cilios", linha: "Yalanni", qtdBox: 12, qtd: 12, valorUnit: 4.60, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
   ]);
 
   const updateItem = <K extends keyof CotacaoItem>(
@@ -87,8 +79,7 @@ const Precificacao = () => {
   );
 
   const lucroPrev = totais.venda - totais.custo;
-  const margemMedia =
-    totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
+  const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -119,50 +110,32 @@ const Precificacao = () => {
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <Package className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">
-                Itens cotados
-              </span>
+              <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
             </div>
             <p className="text-2xl font-bold text-foreground">{items.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {totais.qtd} unidades
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{totais.qtd} unidades</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <DollarSign className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">
-                Custo total
-              </span>
+              <span className="text-xs uppercase tracking-wider font-medium">Custo total</span>
             </div>
-            <p className="text-2xl font-bold text-foreground">
-              {formatCurrency(totais.custo)}
-            </p>
+            <p className="text-2xl font-bold text-foreground">{formatCurrency(totais.custo)}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">
-                Venda prevista
-              </span>
+              <span className="text-xs uppercase tracking-wider font-medium">Venda prevista</span>
             </div>
-            <p className="text-2xl font-bold text-emerald-600">
-              {formatCurrency(totais.venda)}
-            </p>
+            <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totais.venda)}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
               <TrendingUp className="h-3.5 w-3.5" />
-              <span className="text-xs uppercase tracking-wider font-medium">
-                Margem média
-              </span>
+              <span className="text-xs uppercase tracking-wider font-medium">Margem média</span>
             </div>
-            <p className="text-2xl font-bold text-emerald-600">
-              {margemMedia.toFixed(1)}%
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Lucro {formatCurrency(lucroPrev)}
-            </p>
+            <p className="text-2xl font-bold text-emerald-600">{margemMedia.toFixed(1)}%</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Lucro {formatCurrency(lucroPrev)}</p>
           </div>
         </div>
 
@@ -179,14 +152,15 @@ const Precificacao = () => {
               <TableHeader>
                 <TableRow className="bg-muted/30">
                   <TableHead className="w-12 text-center">#</TableHead>
-                  <TableHead className="min-w-[220px]">Nome do item</TableHead>
+                  <TableHead className="min-w-[100px]">Cód.</TableHead>
+                  <TableHead className="min-w-[220px]">Descrição</TableHead>
+                  <TableHead className="min-w-[140px]">Linha</TableHead>
                   <TableHead className="text-center">Qtd. / Box</TableHead>
                   <TableHead className="text-center">Qtd.</TableHead>
-                  <TableHead className="text-right">R$ Unit.</TableHead>
-                  <TableHead className="text-right">R$ Total</TableHead>
-                  <TableHead className="text-center">Margem (%)</TableHead>
+                  <TableHead className="text-right">R$ Un.</TableHead>
+                  <TableHead className="text-center">Margem</TableHead>
                   <TableHead className="text-right">R$ Venda</TableHead>
-                  <TableHead className="min-w-[160px]">Fornecedor</TableHead>
+                  <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
@@ -201,11 +175,25 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell>
                         <Input
+                          value={it.codigo}
+                          placeholder="Cód."
+                          onChange={(e) => updateItem(it.id, "codigo", e.target.value)}
+                          className="h-9 font-mono text-xs"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
                           value={it.nome}
                           placeholder="Descrição do item"
-                          onChange={(e) =>
-                            updateItem(it.id, "nome", e.target.value)
-                          }
+                          onChange={(e) => updateItem(it.id, "nome", e.target.value)}
+                          className="h-9"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={it.linha}
+                          placeholder="Linha / marca"
+                          onChange={(e) => updateItem(it.id, "linha", e.target.value)}
                           className="h-9"
                         />
                       </TableCell>
@@ -214,13 +202,7 @@ const Precificacao = () => {
                           type="number"
                           min={1}
                           value={it.qtdBox}
-                          onChange={(e) =>
-                            updateItem(
-                              it.id,
-                              "qtdBox",
-                              Number(e.target.value) || 0,
-                            )
-                          }
+                          onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
                       </TableCell>
@@ -229,13 +211,7 @@ const Precificacao = () => {
                           type="number"
                           min={0}
                           value={it.qtd}
-                          onChange={(e) =>
-                            updateItem(
-                              it.id,
-                              "qtd",
-                              Number(e.target.value) || 0,
-                            )
-                          }
+                          onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
                       </TableCell>
@@ -245,18 +221,9 @@ const Precificacao = () => {
                           min={0}
                           step="0.01"
                           value={it.valorUnit}
-                          onChange={(e) =>
-                            updateItem(
-                              it.id,
-                              "valorUnit",
-                              Number(e.target.value) || 0,
-                            )
-                          }
+                          onChange={(e) => updateItem(it.id, "valorUnit", Number(e.target.value) || 0)}
                           className="h-9 w-24 text-right"
                         />
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(total)}
                       </TableCell>
                       <TableCell>
                         <div className="relative">
@@ -265,13 +232,7 @@ const Precificacao = () => {
                             min={0}
                             step="0.1"
                             value={it.margem}
-                            onChange={(e) =>
-                              updateItem(
-                                it.id,
-                                "margem",
-                                Number(e.target.value) || 0,
-                              )
-                            }
+                            onChange={(e) => updateItem(it.id, "margem", Number(e.target.value) || 0)}
                             className="h-9 w-24 pr-7 text-right"
                           />
                           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
@@ -282,15 +243,8 @@ const Precificacao = () => {
                       <TableCell className="text-right font-bold text-emerald-600">
                         {formatCurrency(venda)}
                       </TableCell>
-                      <TableCell>
-                        <Input
-                          value={it.fornecedor}
-                          placeholder="Nome do fornecedor"
-                          onChange={(e) =>
-                            updateItem(it.id, "fornecedor", e.target.value)
-                          }
-                          className="h-9"
-                        />
+                      <TableCell className="text-right font-semibold">
+                        {formatCurrency(total)}
                       </TableCell>
                       <TableCell>
                         <Button
@@ -307,12 +261,8 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell
-                      colSpan={10}
-                      className="text-center text-sm text-muted-foreground py-10"
-                    >
-                      Nenhum item adicionado. Clique em "Adicionar item" para
-                      começar a cotação.
+                    <TableCell colSpan={11} className="text-center text-sm text-muted-foreground py-10">
+                      Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
                 )}
@@ -320,23 +270,21 @@ const Precificacao = () => {
               {items.length > 0 && (
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={3} className="text-sm text-muted-foreground">
+                    <TableCell colSpan={5} className="text-sm text-muted-foreground">
                       Total: <strong>{items.length}</strong> itens
                     </TableCell>
-                    <TableCell className="text-center font-semibold">
-                      {totais.qtd}
-                    </TableCell>
+                    <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
                     <TableCell />
-                    <TableCell className="text-right font-bold">
-                      {formatCurrency(totais.custo)}
-                    </TableCell>
                     <TableCell className="text-center text-sm font-medium text-emerald-600">
                       {margemMedia.toFixed(1)}%
                     </TableCell>
                     <TableCell className="text-right font-bold text-emerald-600">
                       {formatCurrency(totais.venda)}
                     </TableCell>
-                    <TableCell colSpan={2} />
+                    <TableCell className="text-right font-bold">
+                      {formatCurrency(totais.custo)}
+                    </TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableFooter>
               )}
