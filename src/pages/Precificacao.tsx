@@ -200,18 +200,18 @@ const Precificacao = () => {
                       <TableCell>
                         <Input
                           type="number"
-                          min={1}
-                          value={it.qtdBox}
-                          onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
+                          min={0}
+                          value={it.qtd}
+                          onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
                       </TableCell>
                       <TableCell>
                         <Input
                           type="number"
-                          min={0}
-                          value={it.qtd}
-                          onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
+                          min={1}
+                          value={it.qtdBox}
+                          onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
                       </TableCell>
