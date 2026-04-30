@@ -76,7 +76,17 @@ const Precificacao = () => {
     setItems((prev) => prev.filter((it) => it.id !== id));
 
   const calcTotal = (it: CotacaoItem) => it.qtd * it.valorUnit;
-  const calcVenda = (it: CotacaoItem) => it.valorUnit * (1 + it.margem / 100);
+
+  // Despesas precisam ser conhecidas antes para entrar no custo real por unidade
+  const totalDespesas =
+    despesas.combustivel + despesas.alimentacao + despesas.estacionamento + despesas.pedagio;
+  const totalUnidades = items.reduce((s, it) => s + it.qtd, 0);
+  const despesaPorUnidade = totalUnidades > 0 ? totalDespesas / totalUnidades : 0;
+
+  // Custo real por unidade já inclui o rateio das despesas
+  const custoRealUnit = (it: CotacaoItem) => it.valorUnit + despesaPorUnidade;
+  // Venda aplica a margem sobre o custo real (com despesas embutidas)
+  const calcVenda = (it: CotacaoItem) => custoRealUnit(it) * (1 + it.margem / 100);
 
   const totais = items.reduce(
     (acc, it) => {
@@ -90,10 +100,7 @@ const Precificacao = () => {
     { qtd: 0, custo: 0, venda: 0 },
   );
 
-  const totalDespesas =
-    despesas.combustivel + despesas.alimentacao + despesas.estacionamento + despesas.pedagio;
-
-  // Custo total = custo dos itens + despesas rateadas (afetam margem real)
+  // Custo total = custo dos itens + despesas
   const custoTotalReal = totais.custo + totalDespesas;
   const lucroPrev = totais.venda - custoTotalReal;
   const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
