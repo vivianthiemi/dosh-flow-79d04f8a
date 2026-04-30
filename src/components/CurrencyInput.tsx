@@ -17,16 +17,12 @@ const formatBR = (n: number) =>
     maximumFractionDigits: 2,
   });
 
-const parseBR = (s: string): number => {
-  // Mantém apenas dígitos, vírgulas e pontos. Trata "1.234,56" e "1234.56".
-  const cleaned = s.replace(/[^\d.,-]/g, "");
-  if (!cleaned) return 0;
-  // Se tem vírgula, considera vírgula como decimal (formato BR)
-  if (cleaned.includes(",")) {
-    const normalized = cleaned.replace(/\./g, "").replace(",", ".");
-    return Number(normalized) || 0;
-  }
-  return Number(cleaned) || 0;
+// Estilo "máquina registradora": o usuário digita só dígitos,
+// os dois últimos viram centavos automaticamente (sem precisar de vírgula).
+const digitsToNumber = (digits: string): number => {
+  const onlyDigits = digits.replace(/\D/g, "");
+  if (!onlyDigits) return 0;
+  return Number(onlyDigits) / 100;
 };
 
 export const CurrencyInput = ({
@@ -37,13 +33,12 @@ export const CurrencyInput = ({
   disabled,
   prefix = "R$",
 }: CurrencyInputProps) => {
-  const [focused, setFocused] = useState(false);
-  const [draft, setDraft] = useState(formatBR(value));
+  const [display, setDisplay] = useState(formatBR(value));
 
-  // Sincroniza quando o valor externo muda e o usuário NÃO está editando
+  // Sincroniza quando o valor externo muda
   useEffect(() => {
-    if (!focused) setDraft(formatBR(value));
-  }, [value, focused]);
+    setDisplay(formatBR(value));
+  }, [value]);
 
   return (
     <div className="relative">
@@ -51,21 +46,15 @@ export const CurrencyInput = ({
         {prefix}
       </span>
       <Input
-        inputMode="decimal"
-        value={draft}
+        inputMode="numeric"
+        value={display}
         disabled={disabled}
         placeholder={placeholder}
-        onFocus={(e) => {
-          setFocused(true);
-          e.currentTarget.select();
-        }}
+        onFocus={(e) => e.currentTarget.select()}
         onChange={(e) => {
-          setDraft(e.target.value);
-          onChange(parseBR(e.target.value));
-        }}
-        onBlur={() => {
-          setFocused(false);
-          setDraft(formatBR(value));
+          const num = digitsToNumber(e.target.value);
+          setDisplay(formatBR(num));
+          onChange(num);
         }}
         className={cn("h-9 pl-7 text-right tabular-nums", className)}
       />
