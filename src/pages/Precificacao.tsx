@@ -284,29 +284,181 @@ const Precificacao = () => {
                   </TableRow>
                 )}
               </TableBody>
-              {items.length > 0 && (
-                <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-sm text-muted-foreground">
-                      Total: <strong>{items.length}</strong> itens
-                    </TableCell>
-                    <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
-                    <TableCell />
-                    <TableCell className="text-right font-bold">
-                      {formatCurrency(totais.custo)}
-                    </TableCell>
-                    <TableCell className="text-center text-sm font-medium text-emerald-600">
-                      {margemMedia.toFixed(1)}%
-                    </TableCell>
-                    <TableCell className="text-right font-bold text-emerald-600">
-                      {formatCurrency(totais.venda)}
-                    </TableCell>
-                    <TableCell />
-                    <TableCell />
-                  </TableRow>
-                </TableFooter>
-              )}
+              {items.length > 0 && (() => {
+                const margemItens = totais.venda > 0 ? ((totais.venda - totais.custo) / totais.venda) * 100 : 0;
+                return (
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-sm text-muted-foreground">
+                        Total: <strong>{items.length}</strong> itens
+                      </TableCell>
+                      <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
+                      <TableCell />
+                      <TableCell className="text-right font-bold">
+                        {formatCurrency(totais.custo)}
+                      </TableCell>
+                      <TableCell className="text-center text-sm font-medium text-emerald-600">
+                        {margemItens.toFixed(1)}%
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-emerald-600">
+                        {formatCurrency(totais.venda)}
+                      </TableCell>
+                      <TableCell />
+                      <TableCell />
+                    </TableRow>
+                  </TableFooter>
+                );
+              })()}
             </Table>
+          </div>
+        </div>
+
+        {/* Custos da Viagem */}
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
+            <Truck className="h-4 w-4 text-primary" />
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+              Custos da Viagem
+            </h2>
+            <span className="ml-auto text-xs text-muted-foreground">
+              Rateado proporcionalmente no custo dos itens
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5">
+            {[
+              { key: "combustivel" as const, label: "Combustível", icon: Fuel },
+              { key: "alimentacao" as const, label: "Alimentação", icon: UtensilsCrossed },
+              { key: "estacionamento" as const, label: "Estacionamento", icon: ParkingSquare },
+              { key: "pedagio" as const, label: "Pedágio", icon: Receipt },
+            ].map(({ key, label, icon: Icon }) => (
+              <div key={key} className="space-y-1.5">
+                <label className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                    R$
+                  </span>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    value={despesas[key]}
+                    onChange={(e) => updateDespesa(key, Number(e.target.value) || 0)}
+                    className="h-10 pl-9 text-right font-medium"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-between border-t border-border bg-muted/30 px-5 py-3">
+            <span className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+              Total despesas
+            </span>
+            <span className="text-base font-bold text-foreground">
+              {formatCurrency(totalDespesas)}
+            </span>
+          </div>
+        </div>
+
+        {/* Custo por Fornecedor */}
+        {custoPorFornecedor.length > 0 && (
+          <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-border bg-primary/5 px-5 py-3">
+              <DollarSign className="h-4 w-4 text-primary" />
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+                Custo por Fornecedor
+              </h2>
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/30">
+                  <TableHead>Fornecedor</TableHead>
+                  <TableHead className="text-center">Itens</TableHead>
+                  <TableHead className="text-right">Custo dos itens</TableHead>
+                  <TableHead className="text-right">Despesas (rateio)</TableHead>
+                  <TableHead className="text-right">Custo total</TableHead>
+                  <TableHead className="text-right">% do total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {custoPorFornecedor.map((f) => {
+                  const pct = custoTotalReal > 0 ? (f.custoTotal / custoTotalReal) * 100 : 0;
+                  return (
+                    <TableRow key={f.fornecedor}>
+                      <TableCell className="font-medium">{f.fornecedor}</TableCell>
+                      <TableCell className="text-center text-muted-foreground">
+                        {f.qtdItens}
+                      </TableCell>
+                      <TableCell className="text-right">{formatCurrency(f.custoItens)}</TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {formatCurrency(f.despesasRateio)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold">
+                        {formatCurrency(f.custoTotal)}
+                      </TableCell>
+                      <TableCell className="text-right text-sm text-muted-foreground">
+                        {pct.toFixed(1)}%
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell className="font-semibold">Total</TableCell>
+                  <TableCell className="text-center font-semibold">{items.length}</TableCell>
+                  <TableCell className="text-right font-bold">{formatCurrency(totais.custo)}</TableCell>
+                  <TableCell className="text-right font-bold">{formatCurrency(totalDespesas)}</TableCell>
+                  <TableCell className="text-right font-bold text-primary">
+                    {formatCurrency(custoTotalReal)}
+                  </TableCell>
+                  <TableCell className="text-right font-semibold">100,0%</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
+        )}
+
+        {/* Totalização (cards no final) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <Package className="h-3.5 w-3.5" />
+              <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
+            </div>
+            <p className="text-2xl font-bold text-foreground">{items.length}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{totais.qtd} unidades</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <DollarSign className="h-3.5 w-3.5" />
+              <span className="text-xs uppercase tracking-wider font-medium">Custo total</span>
+            </div>
+            <p className="text-2xl font-bold text-foreground">{formatCurrency(custoTotalReal)}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Itens {formatCurrency(totais.custo)} + desp. {formatCurrency(totalDespesas)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <TrendingUp className="h-3.5 w-3.5" />
+              <span className="text-xs uppercase tracking-wider font-medium">Venda prevista</span>
+            </div>
+            <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totais.venda)}</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+              <TrendingUp className="h-3.5 w-3.5" />
+              <span className="text-xs uppercase tracking-wider font-medium">Margem real</span>
+            </div>
+            <p className={`text-2xl font-bold ${lucroPrev >= 0 ? "text-emerald-600" : "text-destructive"}`}>
+              {margemMedia.toFixed(1)}%
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Lucro {formatCurrency(lucroPrev)}
+            </p>
           </div>
         </div>
 
