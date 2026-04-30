@@ -250,6 +250,14 @@ const Precificacao = () => {
                         {formatCurrency(venda)}
                       </TableCell>
                       <TableCell>
+                        <Input
+                          value={it.fornecedor}
+                          placeholder="Fornecedor"
+                          onChange={(e) => updateItem(it.id, "fornecedor", e.target.value)}
+                          className="h-9"
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           variant="ghost"
                           size="icon"
