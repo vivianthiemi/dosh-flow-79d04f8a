@@ -60,6 +60,11 @@ const Precificacao = () => {
     pedagio: 0,
   });
 
+  // Estado de colapso por fornecedor (true = recolhido)
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const toggleCollapsed = (key: string) =>
+    setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+
   const updateDespesa = (field: keyof typeof despesas, value: number) =>
     setDespesas((prev) => ({ ...prev, [field]: value }));
 
