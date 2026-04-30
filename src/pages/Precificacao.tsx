@@ -225,6 +225,9 @@ const Precificacao = () => {
                           className="h-9 w-24 text-right"
                         />
                       </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        {formatCurrency(total)}
+                      </TableCell>
                       <TableCell>
                         <div className="relative">
                           <Input
@@ -242,9 +245,6 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell className="text-right font-bold text-emerald-600">
                         {formatCurrency(venda)}
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(total)}
                       </TableCell>
                       <TableCell>
                         <Button
