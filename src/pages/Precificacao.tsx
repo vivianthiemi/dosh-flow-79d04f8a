@@ -186,8 +186,8 @@ const Precificacao = () => {
               </p>
             </div>
           </div>
-          <Button onClick={addItem} size="sm">
-            <Plus className="mr-1 h-4 w-4" /> Adicionar item
+          <Button onClick={addFornecedor} size="sm">
+            <Plus className="mr-1 h-4 w-4" /> Novo fornecedor
           </Button>
         </div>
       </header>
