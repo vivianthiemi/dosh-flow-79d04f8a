@@ -16,11 +16,12 @@ interface CotacaoItem {
   id: string;
   codigo: string;
   nome: string;
-  linha: string;
+  marca: string;
   qtdBox: number;
   qtd: number;
   valorUnit: number;
   margem: number;
+  fornecedor: string;
 }
 
 const formatCurrency = (v: number) =>
@@ -30,23 +31,24 @@ const novoItem = (): CotacaoItem => ({
   id: crypto.randomUUID(),
   codigo: "",
   nome: "",
-  linha: "",
+  marca: "",
   qtdBox: 1,
   qtd: 1,
   valorUnit: 0,
   margem: 30,
+  fornecedor: "",
 });
 
 const Precificacao = () => {
   const [items, setItems] = useState<CotacaoItem[]>([
-    { id: crypto.randomUUID(), codigo: "SL12", nome: "Amor MM5+ Cilios Posticos - 5DCilios", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 9.20, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "SP 2155", nome: "Kit e Esponja", linha: "Ss", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "MOC 2353", nome: "Lip Oil Stawbery", linha: "Moc MAllure", qtdBox: 12, qtd: 12, valorUnit: 10.50, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "HL6185", nome: "Lip Oil Unicornio", linha: "Hold Morning", qtdBox: 12, qtd: 12, valorUnit: 8.40, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "MM087", nome: "Esponja Chanfrada", linha: "Mandala", qtdBox: 12, qtd: 12, valorUnit: 1.35, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "FR052", nome: "Paleta de sombra Eye Lux", linha: "Femme Paris", qtdBox: 24, qtd: 24, valorUnit: 5.30, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "YL151", nome: "Mascara Cilios", linha: "Yalanni", qtdBox: 12, qtd: 12, valorUnit: 4.60, margem: 30 },
-    { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", linha: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30 },
+    { id: crypto.randomUUID(), codigo: "SL12", nome: "Amor MM5+ Cilios Posticos - 5DCilios", marca: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 9.20, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "SP 2155", nome: "Kit e Esponja", marca: "Ss", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "MOC 2353", nome: "Lip Oil Stawbery", marca: "Moc MAllure", qtdBox: 12, qtd: 12, valorUnit: 10.50, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "HL6185", nome: "Lip Oil Unicornio", marca: "Hold Morning", qtdBox: 12, qtd: 12, valorUnit: 8.40, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "MM087", nome: "Esponja Chanfrada", marca: "Mandala", qtdBox: 12, qtd: 12, valorUnit: 1.35, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "FR052", nome: "Paleta de sombra Eye Lux", marca: "Femme Paris", qtdBox: 24, qtd: 24, valorUnit: 5.30, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "YL151", nome: "Mascara Cilios", marca: "Yalanni", qtdBox: 12, qtd: 12, valorUnit: 4.60, margem: 30, fornecedor: "Seven" },
+    { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", marca: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30, fornecedor: "Seven" },
   ]);
 
   const updateItem = <K extends keyof CotacaoItem>(
@@ -154,13 +156,14 @@ const Precificacao = () => {
                   <TableHead className="w-12 text-center">#</TableHead>
                   <TableHead className="min-w-[100px]">Cód.</TableHead>
                   <TableHead className="min-w-[220px]">Descrição</TableHead>
-                  <TableHead className="min-w-[140px]">Linha</TableHead>
+                  <TableHead className="min-w-[140px]">Marca</TableHead>
                   <TableHead className="text-center">Qtd.</TableHead>
                   <TableHead className="text-center">Qtd. / Box</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
                   <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
                   <TableHead className="text-right">R$ Venda</TableHead>
+                  <TableHead className="min-w-[140px]">Fornecedor</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
@@ -191,9 +194,9 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell>
                         <Input
-                          value={it.linha}
-                          placeholder="Linha / marca"
-                          onChange={(e) => updateItem(it.id, "linha", e.target.value)}
+                          value={it.marca}
+                          placeholder="Marca"
+                          onChange={(e) => updateItem(it.id, "marca", e.target.value)}
                           className="h-9"
                         />
                       </TableCell>
@@ -247,6 +250,14 @@ const Precificacao = () => {
                         {formatCurrency(venda)}
                       </TableCell>
                       <TableCell>
+                        <Input
+                          value={it.fornecedor}
+                          placeholder="Fornecedor"
+                          onChange={(e) => updateItem(it.id, "fornecedor", e.target.value)}
+                          className="h-9"
+                        />
+                      </TableCell>
+                      <TableCell>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -261,7 +272,7 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11} className="text-center text-sm text-muted-foreground py-10">
+                    <TableCell colSpan={12} className="text-center text-sm text-muted-foreground py-10">
                       Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
@@ -284,6 +295,7 @@ const Precificacao = () => {
                     <TableCell className="text-right font-bold text-emerald-600">
                       {formatCurrency(totais.venda)}
                     </TableCell>
+                    <TableCell />
                     <TableCell />
                   </TableRow>
                 </TableFooter>
