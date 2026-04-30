@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent } from "lucide-react";
+import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,6 +11,7 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CotacaoItem {
   id: string;
@@ -507,13 +508,46 @@ const Precificacao = () => {
               }`}
             >
               <div className="flex items-center justify-between mb-3">
-                <span
-                  className={`text-xs uppercase tracking-wider font-medium ${
-                    lucroPrev >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-destructive"
-                  }`}
-                >
-                  Margem real
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`text-xs uppercase tracking-wider font-medium ${
+                      lucroPrev >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-destructive"
+                    }`}
+                  >
+                    Margem real
+                  </span>
+                  <TooltipProvider delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="Como a margem real é calculada"
+                          className="text-muted-foreground/70 hover:text-foreground transition-colors"
+                        >
+                          <Info className="h-3.5 w-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                        <p className="font-semibold mb-1">Como é calculada</p>
+                        <p className="mb-1.5">
+                          As despesas de viagem são rateadas por unidade e somadas ao custo de cada item.
+                          A margem configurada é aplicada sobre esse custo real.
+                        </p>
+                        <div className="space-y-0.5 font-mono text-[11px] text-muted-foreground">
+                          <div>Custo real un. = valor un. + rateio</div>
+                          <div>Venda un. = custo real × (1 + margem%)</div>
+                          <div>Margem real = (venda − custo total) ÷ venda</div>
+                        </div>
+                        <div className="mt-2 pt-2 border-t border-border/60 space-y-0.5 font-mono text-[11px]">
+                          <div>Rateio/un: {formatCurrency(despesaPorUnidade)}</div>
+                          <div>Despesas: {formatCurrency(totalDespesas)}</div>
+                          <div>Custo total: {formatCurrency(custoTotalReal)}</div>
+                          <div>Venda: {formatCurrency(totais.venda)}</div>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 <div
                   className={`h-7 w-7 rounded-lg flex items-center justify-center ${
                     lucroPrev >= 0
