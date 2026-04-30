@@ -303,10 +303,14 @@ const Precificacao = () => {
                 return (
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={5} className="text-sm text-muted-foreground">
+                      <TableCell colSpan={4} className="text-sm text-muted-foreground">
                         Total: <strong>{items.length}</strong> itens
                       </TableCell>
-                      <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
+                      <TableCell className="text-center font-semibold tabular-nums">
+                        {items.reduce((s, it) => s + it.qtd, 0)}
+                      </TableCell>
+                      <TableCell />
+                      <TableCell className="text-center font-bold tabular-nums">{totais.qtd}</TableCell>
                       <TableCell />
                       <TableCell className="text-right font-bold">
                         {formatCurrency(totais.custo)}
