@@ -376,7 +376,7 @@ const Precificacao = () => {
                   <TableHead>Fornecedor</TableHead>
                   <TableHead className="text-center">Itens</TableHead>
                   <TableHead className="text-right">Custo dos itens</TableHead>
-                  <TableHead className="text-right">Despesas (÷ fornecedores)</TableHead>
+                  <TableHead className="text-right">Despesas (÷ itens)</TableHead>
                   <TableHead className="text-right">Custo total</TableHead>
                   <TableHead className="text-right">% do total</TableHead>
                 </TableRow>
