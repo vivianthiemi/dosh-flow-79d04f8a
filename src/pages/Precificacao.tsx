@@ -72,6 +72,17 @@ const Precificacao = () => {
     );
   };
 
+  // Atualiza valorUnit a partir do valor da caixa (R$ caixa ÷ Un./Box)
+  const updateValorCaixa = (id: string, valorCaixa: number) => {
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === id
+          ? { ...it, valorUnit: it.qtdBox > 0 ? valorCaixa / it.qtdBox : 0 }
+          : it,
+      ),
+    );
+  };
+
   const addItem = () => setItems((prev) => [...prev, novoItem()]);
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
@@ -175,6 +186,7 @@ const Precificacao = () => {
                   <TableHead className="text-center">Qtd. (caixas)</TableHead>
                   <TableHead className="text-center">Un. / Box</TableHead>
                   <TableHead className="text-center">Qtd. Total</TableHead>
+                  <TableHead className="text-right">R$ Caixa</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
                   <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
@@ -243,9 +255,21 @@ const Precificacao = () => {
                           type="number"
                           min={0}
                           step="0.01"
-                          value={it.valorUnit}
+                          value={Number((it.valorUnit * it.qtdBox).toFixed(2))}
+                          onChange={(e) => updateValorCaixa(it.id, Number(e.target.value) || 0)}
+                          className="h-9 w-24 text-right"
+                          placeholder="0,00"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          value={Number(it.valorUnit.toFixed(4))}
                           onChange={(e) => updateItem(it.id, "valorUnit", Number(e.target.value) || 0)}
                           className="h-9 w-24 text-right"
+                          placeholder="0,00"
                         />
                       </TableCell>
                       <TableCell className="text-right font-semibold">
@@ -292,7 +316,7 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={13} className="text-center text-sm text-muted-foreground py-10">
+                    <TableCell colSpan={14} className="text-center text-sm text-muted-foreground py-10">
                       Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
@@ -311,6 +335,7 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell />
                       <TableCell className="text-center font-bold tabular-nums">{totais.qtd}</TableCell>
+                      <TableCell />
                       <TableCell />
                       <TableCell className="text-right font-bold">
                         {formatCurrency(totais.custo)}
