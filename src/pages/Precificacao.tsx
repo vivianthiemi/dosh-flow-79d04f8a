@@ -99,8 +99,10 @@ const Precificacao = () => {
   const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
 
   // Custo por fornecedor — despesas de viagem são divididas igualmente
-  // entre os fornecedores visitados (mesmo custo logístico para cada um)
+  // entre todos os itens; cada fornecedor recebe a soma da sua parcela.
   const custoPorFornecedor = (() => {
+    const totalItens = items.length;
+    const despesaPorItem = totalItens > 0 ? totalDespesas / totalItens : 0;
     const map = new Map<string, { custoItens: number; qtdItens: number }>();
     items.forEach((it) => {
       const key = it.fornecedor || "Sem fornecedor";
@@ -109,15 +111,13 @@ const Precificacao = () => {
       cur.qtdItens += 1;
       map.set(key, cur);
     });
-    const numFornecedores = map.size;
-    const despesasPorFornecedor = numFornecedores > 0 ? totalDespesas / numFornecedores : 0;
     return Array.from(map.entries())
       .map(([fornecedor, v]) => ({
         fornecedor,
         qtdItens: v.qtdItens,
         custoItens: v.custoItens,
-        despesasRateio: despesasPorFornecedor,
-        custoTotal: v.custoItens + despesasPorFornecedor,
+        despesasRateio: despesaPorItem * v.qtdItens,
+        custoTotal: v.custoItens + despesaPorItem * v.qtdItens,
       }))
       .sort((a, b) => b.custoTotal - a.custoTotal);
   })();
