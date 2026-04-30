@@ -438,9 +438,9 @@ const Precificacao = () => {
             </div>
             <div className="mt-3 pt-2 border-t border-border/60">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Rateio por item</span>
+                <span className="text-xs text-muted-foreground">Rateio por unidade</span>
                 <span className="text-sm font-semibold text-foreground">
-                  {formatCurrency(items.length > 0 ? totalDespesas / items.length : 0)}
+                  {formatCurrency(despesaPorUnidade)}
                 </span>
               </div>
             </div>
