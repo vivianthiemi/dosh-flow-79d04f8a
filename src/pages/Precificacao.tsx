@@ -117,7 +117,7 @@ const Precificacao = () => {
       const cur = map.get(key) ?? { custoItens: 0, qtdItens: 0, qtdUnidades: 0 };
       cur.custoItens += calcTotal(it);
       cur.qtdItens += 1;
-      cur.qtdUnidades += it.qtd;
+      cur.qtdUnidades += calcUnidades(it);
       map.set(key, cur);
     });
     return Array.from(map.entries())
