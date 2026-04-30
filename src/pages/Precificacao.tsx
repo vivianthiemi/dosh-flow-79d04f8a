@@ -51,6 +51,16 @@ const Precificacao = () => {
     { id: crypto.randomUUID(), codigo: "AMOR B03", nome: "Cilios Posticos", marca: "Amor Anjo", qtdBox: 12, qtd: 12, valorUnit: 7.20, margem: 30, fornecedor: "Seven" },
   ]);
 
+  const [despesas, setDespesas] = useState({
+    combustivel: 0,
+    alimentacao: 0,
+    estacionamento: 0,
+    pedagio: 0,
+  });
+
+  const updateDespesa = (field: keyof typeof despesas, value: number) =>
+    setDespesas((prev) => ({ ...prev, [field]: value }));
+
   const updateItem = <K extends keyof CotacaoItem>(
     id: string,
     field: K,
@@ -80,8 +90,38 @@ const Precificacao = () => {
     { qtd: 0, custo: 0, venda: 0 },
   );
 
-  const lucroPrev = totais.venda - totais.custo;
+  const totalDespesas =
+    despesas.combustivel + despesas.alimentacao + despesas.estacionamento + despesas.pedagio;
+
+  // Custo total = custo dos itens + despesas rateadas (afetam margem real)
+  const custoTotalReal = totais.custo + totalDespesas;
+  const lucroPrev = totais.venda - custoTotalReal;
   const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
+
+  // Custo por fornecedor (com rateio proporcional das despesas)
+  const custoPorFornecedor = (() => {
+    const map = new Map<string, { custoItens: number; qtdItens: number }>();
+    items.forEach((it) => {
+      const key = it.fornecedor || "Sem fornecedor";
+      const cur = map.get(key) ?? { custoItens: 0, qtdItens: 0 };
+      cur.custoItens += calcTotal(it);
+      cur.qtdItens += 1;
+      map.set(key, cur);
+    });
+    return Array.from(map.entries())
+      .map(([fornecedor, v]) => {
+        const share = totais.custo > 0 ? v.custoItens / totais.custo : 0;
+        const despesasRateio = totalDespesas * share;
+        return {
+          fornecedor,
+          qtdItens: v.qtdItens,
+          custoItens: v.custoItens,
+          despesasRateio,
+          custoTotal: v.custoItens + despesasRateio,
+        };
+      })
+      .sort((a, b) => b.custoTotal - a.custoTotal);
+  })();
 
   return (
     <div className="min-h-screen bg-background">
