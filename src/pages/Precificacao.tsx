@@ -158,9 +158,9 @@ const Precificacao = () => {
                   <TableHead className="text-center">Qtd.</TableHead>
                   <TableHead className="text-center">Qtd. / Box</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
+                  <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
                   <TableHead className="text-right">R$ Venda</TableHead>
-                  <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
@@ -225,6 +225,9 @@ const Precificacao = () => {
                           className="h-9 w-24 text-right"
                         />
                       </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        {formatCurrency(total)}
+                      </TableCell>
                       <TableCell>
                         <div className="relative">
                           <Input
@@ -242,9 +245,6 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell className="text-right font-bold text-emerald-600">
                         {formatCurrency(venda)}
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        {formatCurrency(total)}
                       </TableCell>
                       <TableCell>
                         <Button
@@ -275,14 +275,14 @@ const Precificacao = () => {
                     </TableCell>
                     <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
                     <TableCell />
+                    <TableCell className="text-right font-bold">
+                      {formatCurrency(totais.custo)}
+                    </TableCell>
                     <TableCell className="text-center text-sm font-medium text-emerald-600">
                       {margemMedia.toFixed(1)}%
                     </TableCell>
                     <TableCell className="text-right font-bold text-emerald-600">
                       {formatCurrency(totais.venda)}
-                    </TableCell>
-                    <TableCell className="text-right font-bold">
-                      {formatCurrency(totais.custo)}
                     </TableCell>
                     <TableCell />
                   </TableRow>
