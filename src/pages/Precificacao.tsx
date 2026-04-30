@@ -172,8 +172,9 @@ const Precificacao = () => {
                   <TableHead className="min-w-[100px]">Cód.</TableHead>
                   <TableHead className="min-w-[220px]">Descrição</TableHead>
                   <TableHead className="min-w-[140px]">Marca</TableHead>
-                  <TableHead className="text-center">Qtd.</TableHead>
-                  <TableHead className="text-center">Qtd. / Box</TableHead>
+                  <TableHead className="text-center">Qtd. (caixas)</TableHead>
+                  <TableHead className="text-center">Un. / Box</TableHead>
+                  <TableHead className="text-center">Qtd. Total</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
                   <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
