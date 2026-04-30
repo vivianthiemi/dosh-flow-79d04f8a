@@ -428,7 +428,9 @@ const Precificacao = () => {
               <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
             </div>
             <p className="text-2xl font-bold text-foreground">{items.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{totais.qtd} unidades</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {totais.qtd} un · rateio {formatCurrency(items.length > 0 ? totalDespesas / items.length : 0)}/item
+            </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
