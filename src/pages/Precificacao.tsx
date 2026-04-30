@@ -12,6 +12,7 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { CurrencyInput } from "@/components/CurrencyInput";
 
 interface CotacaoItem {
   id: string;
