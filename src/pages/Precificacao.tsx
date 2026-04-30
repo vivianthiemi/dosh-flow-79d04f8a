@@ -275,14 +275,14 @@ const Precificacao = () => {
                     </TableCell>
                     <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
                     <TableCell />
+                    <TableCell className="text-right font-bold">
+                      {formatCurrency(totais.custo)}
+                    </TableCell>
                     <TableCell className="text-center text-sm font-medium text-emerald-600">
                       {margemMedia.toFixed(1)}%
                     </TableCell>
                     <TableCell className="text-right font-bold text-emerald-600">
                       {formatCurrency(totais.venda)}
-                    </TableCell>
-                    <TableCell className="text-right font-bold">
-                      {formatCurrency(totais.custo)}
                     </TableCell>
                     <TableCell />
                   </TableRow>
