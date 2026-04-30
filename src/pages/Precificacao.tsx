@@ -186,6 +186,7 @@ const Precificacao = () => {
               <TableBody>
                 {items.map((it, idx) => {
                   const total = calcTotal(it);
+                  const unidades = calcUnidades(it);
                   const venda = calcVenda(it);
                   return (
                     <TableRow key={it.id}>
