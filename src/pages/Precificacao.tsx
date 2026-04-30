@@ -84,9 +84,29 @@ const Precificacao = () => {
     );
   };
 
-  const addItem = () => setItems((prev) => [...prev, novoItem()]);
+  const addItem = (fornecedor = "") =>
+    setItems((prev) => [...prev, { ...novoItem(), fornecedor }]);
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
+
+  // Renomeia o fornecedor em todos os itens dele
+  const renameFornecedor = (oldName: string, newName: string) => {
+    setItems((prev) =>
+      prev.map((it) => (it.fornecedor === oldName ? { ...it, fornecedor: newName } : it)),
+    );
+  };
+
+  // Adiciona um novo bloco de fornecedor (com 1 item vazio para começar)
+  const addFornecedor = () => {
+    // Gera nome único "Novo fornecedor" / " 2" / " 3" ...
+    const base = "Novo fornecedor";
+    const existing = new Set(items.map((it) => it.fornecedor));
+    let name = base;
+    let i = 2;
+    while (existing.has(name)) name = `${base} ${i++}`;
+    setItems((prev) => [...prev, { ...novoItem(), fornecedor: name }]);
+    setCollapsed((prev) => ({ ...prev, [name]: false }));
+  };
 
   // Qtd. = nº de caixas; QtdBox = unidades por caixa
   const calcUnidades = (it: CotacaoItem) => it.qtd * it.qtdBox;
