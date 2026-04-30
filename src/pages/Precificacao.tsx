@@ -235,6 +235,7 @@ const Precificacao = () => {
                           type="number"
                           min={0}
                           value={it.qtd}
+                          onFocus={(e) => e.currentTarget.select()}
                           onChange={(e) => updateItem(it.id, "qtd", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
@@ -244,6 +245,7 @@ const Precificacao = () => {
                           type="number"
                           min={1}
                           value={it.qtdBox}
+                          onFocus={(e) => e.currentTarget.select()}
                           onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
@@ -252,25 +254,17 @@ const Precificacao = () => {
                         {unidades}
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.01"
-                          value={Number((it.valorUnit * it.qtdBox).toFixed(2))}
-                          onChange={(e) => updateValorCaixa(it.id, Number(e.target.value) || 0)}
-                          className="h-9 w-24 text-right"
-                          placeholder="0,00"
+                        <CurrencyInput
+                          value={it.valorUnit * it.qtdBox}
+                          onChange={(v) => updateValorCaixa(it.id, v)}
+                          className="w-28"
                         />
                       </TableCell>
                       <TableCell>
-                        <Input
-                          type="number"
-                          min={0}
-                          step="0.01"
-                          value={Number(it.valorUnit.toFixed(4))}
-                          onChange={(e) => updateItem(it.id, "valorUnit", Number(e.target.value) || 0)}
-                          className="h-9 w-24 text-right"
-                          placeholder="0,00"
+                        <CurrencyInput
+                          value={it.valorUnit}
+                          onChange={(v) => updateItem(it.id, "valorUnit", v)}
+                          className="w-28"
                         />
                       </TableCell>
                       <TableCell className="text-right font-semibold">
