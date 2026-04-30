@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent, Info } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Trash2, Calculator, Package, TrendingUp, DollarSign, Fuel, UtensilsCrossed, ParkingSquare, Receipt, Truck, ShoppingCart, Wallet, Percent, Info, ChevronDown, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
