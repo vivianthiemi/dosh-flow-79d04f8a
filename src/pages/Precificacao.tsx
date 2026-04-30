@@ -235,6 +235,9 @@ const Precificacao = () => {
                           className="h-9 w-20 text-center"
                         />
                       </TableCell>
+                      <TableCell className="text-center font-semibold tabular-nums">
+                        {unidades}
+                      </TableCell>
                       <TableCell>
                         <Input
                           type="number"
