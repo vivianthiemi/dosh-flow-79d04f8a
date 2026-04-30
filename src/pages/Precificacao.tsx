@@ -375,19 +375,11 @@ const Precificacao = () => {
                   <Icon className="h-3.5 w-3.5" />
                   {label}
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                    R$
-                  </span>
-                  <Input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={despesas[key]}
-                    onChange={(e) => updateDespesa(key, Number(e.target.value) || 0)}
-                    className="h-10 pl-9 text-right font-medium"
-                  />
-                </div>
+                <CurrencyInput
+                  value={despesas[key]}
+                  onChange={(v) => updateDespesa(key, v)}
+                  className="h-10 font-medium"
+                />
               </div>
             ))}
           </div>
