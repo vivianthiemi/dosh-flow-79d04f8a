@@ -76,12 +76,14 @@ const Precificacao = () => {
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
 
-  const calcTotal = (it: CotacaoItem) => it.qtd * it.valorUnit;
+  // Qtd. = nº de caixas; QtdBox = unidades por caixa
+  const calcUnidades = (it: CotacaoItem) => it.qtd * it.qtdBox;
+  const calcTotal = (it: CotacaoItem) => calcUnidades(it) * it.valorUnit;
 
   // Despesas precisam ser conhecidas antes para entrar no custo real por unidade
   const totalDespesas =
     despesas.combustivel + despesas.alimentacao + despesas.estacionamento + despesas.pedagio;
-  const totalUnidades = items.reduce((s, it) => s + it.qtd, 0);
+  const totalUnidades = items.reduce((s, it) => s + calcUnidades(it), 0);
   const despesaPorUnidade = totalUnidades > 0 ? totalDespesas / totalUnidades : 0;
 
   // Custo real por unidade já inclui o rateio das despesas
@@ -91,11 +93,10 @@ const Precificacao = () => {
 
   const totais = items.reduce(
     (acc, it) => {
-      const total = calcTotal(it);
-      const totalVenda = calcVenda(it) * it.qtd;
-      acc.qtd += it.qtd;
-      acc.custo += total;
-      acc.venda += totalVenda;
+      const unidades = calcUnidades(it);
+      acc.qtd += unidades;
+      acc.custo += unidades * it.valorUnit;
+      acc.venda += calcVenda(it) * unidades;
       return acc;
     },
     { qtd: 0, custo: 0, venda: 0 },
@@ -116,7 +117,7 @@ const Precificacao = () => {
       const cur = map.get(key) ?? { custoItens: 0, qtdItens: 0, qtdUnidades: 0 };
       cur.custoItens += calcTotal(it);
       cur.qtdItens += 1;
-      cur.qtdUnidades += it.qtd;
+      cur.qtdUnidades += calcUnidades(it);
       map.set(key, cur);
     });
     return Array.from(map.entries())
@@ -171,8 +172,9 @@ const Precificacao = () => {
                   <TableHead className="min-w-[100px]">Cód.</TableHead>
                   <TableHead className="min-w-[220px]">Descrição</TableHead>
                   <TableHead className="min-w-[140px]">Marca</TableHead>
-                  <TableHead className="text-center">Qtd.</TableHead>
-                  <TableHead className="text-center">Qtd. / Box</TableHead>
+                  <TableHead className="text-center">Qtd. (caixas)</TableHead>
+                  <TableHead className="text-center">Un. / Box</TableHead>
+                  <TableHead className="text-center">Qtd. Total</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
                   <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
@@ -184,6 +186,7 @@ const Precificacao = () => {
               <TableBody>
                 {items.map((it, idx) => {
                   const total = calcTotal(it);
+                  const unidades = calcUnidades(it);
                   const venda = calcVenda(it);
                   return (
                     <TableRow key={it.id}>
@@ -231,6 +234,9 @@ const Precificacao = () => {
                           onChange={(e) => updateItem(it.id, "qtdBox", Number(e.target.value) || 0)}
                           className="h-9 w-20 text-center"
                         />
+                      </TableCell>
+                      <TableCell className="text-center font-semibold tabular-nums">
+                        {unidades}
                       </TableCell>
                       <TableCell>
                         <Input
@@ -286,7 +292,7 @@ const Precificacao = () => {
                 })}
                 {items.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={12} className="text-center text-sm text-muted-foreground py-10">
+                    <TableCell colSpan={13} className="text-center text-sm text-muted-foreground py-10">
                       Nenhum item adicionado. Clique em "Adicionar item" para começar a cotação.
                     </TableCell>
                   </TableRow>
@@ -297,10 +303,14 @@ const Precificacao = () => {
                 return (
                   <TableFooter>
                     <TableRow>
-                      <TableCell colSpan={5} className="text-sm text-muted-foreground">
+                      <TableCell colSpan={4} className="text-sm text-muted-foreground">
                         Total: <strong>{items.length}</strong> itens
                       </TableCell>
-                      <TableCell className="text-center font-semibold">{totais.qtd}</TableCell>
+                      <TableCell className="text-center font-semibold tabular-nums">
+                        {items.reduce((s, it) => s + it.qtd, 0)}
+                      </TableCell>
+                      <TableCell />
+                      <TableCell className="text-center font-bold tabular-nums">{totais.qtd}</TableCell>
                       <TableCell />
                       <TableCell className="text-right font-bold">
                         {formatCurrency(totais.custo)}
