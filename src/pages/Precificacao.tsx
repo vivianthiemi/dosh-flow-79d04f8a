@@ -98,7 +98,8 @@ const Precificacao = () => {
   const lucroPrev = totais.venda - custoTotalReal;
   const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
 
-  // Custo por fornecedor (com rateio proporcional das despesas)
+  // Custo por fornecedor — despesas de viagem são divididas igualmente
+  // entre os fornecedores visitados (mesmo custo logístico para cada um)
   const custoPorFornecedor = (() => {
     const map = new Map<string, { custoItens: number; qtdItens: number }>();
     items.forEach((it) => {
@@ -108,18 +109,16 @@ const Precificacao = () => {
       cur.qtdItens += 1;
       map.set(key, cur);
     });
+    const numFornecedores = map.size;
+    const despesasPorFornecedor = numFornecedores > 0 ? totalDespesas / numFornecedores : 0;
     return Array.from(map.entries())
-      .map(([fornecedor, v]) => {
-        const share = totais.custo > 0 ? v.custoItens / totais.custo : 0;
-        const despesasRateio = totalDespesas * share;
-        return {
-          fornecedor,
-          qtdItens: v.qtdItens,
-          custoItens: v.custoItens,
-          despesasRateio,
-          custoTotal: v.custoItens + despesasRateio,
-        };
-      })
+      .map(([fornecedor, v]) => ({
+        fornecedor,
+        qtdItens: v.qtdItens,
+        custoItens: v.custoItens,
+        despesasRateio: despesasPorFornecedor,
+        custoTotal: v.custoItens + despesasPorFornecedor,
+      }))
       .sort((a, b) => b.custoTotal - a.custoTotal);
   })();
 
@@ -377,7 +376,7 @@ const Precificacao = () => {
                   <TableHead>Fornecedor</TableHead>
                   <TableHead className="text-center">Itens</TableHead>
                   <TableHead className="text-right">Custo dos itens</TableHead>
-                  <TableHead className="text-right">Despesas (rateio)</TableHead>
+                  <TableHead className="text-right">Despesas (÷ fornecedores)</TableHead>
                   <TableHead className="text-right">Custo total</TableHead>
                   <TableHead className="text-right">% do total</TableHead>
                 </TableRow>
