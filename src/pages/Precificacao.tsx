@@ -423,14 +423,25 @@ const Precificacao = () => {
         {/* Totalização (cards no final) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <div className="flex items-center gap-2 text-muted-foreground mb-2">
               <Package className="h-3.5 w-3.5" />
               <span className="text-xs uppercase tracking-wider font-medium">Itens cotados</span>
             </div>
-            <p className="text-2xl font-bold text-foreground">{items.length}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {totais.qtd} un · rateio {formatCurrency(items.length > 0 ? totalDespesas / items.length : 0)}/item
-            </p>
+            <div className="flex items-baseline gap-1.5">
+              <p className="text-2xl font-bold text-foreground leading-none">{items.length}</p>
+              <span className="text-xs text-muted-foreground">itens</span>
+              <span className="text-muted-foreground/50 mx-1">·</span>
+              <p className="text-base font-semibold text-foreground leading-none">{totais.qtd}</p>
+              <span className="text-xs text-muted-foreground">un</span>
+            </div>
+            <div className="mt-3 pt-2 border-t border-border/60">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Rateio por item</span>
+                <span className="text-sm font-semibold text-foreground">
+                  {formatCurrency(items.length > 0 ? totalDespesas / items.length : 0)}
+                </span>
+              </div>
+            </div>
           </div>
           <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
