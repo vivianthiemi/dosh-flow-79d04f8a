@@ -98,26 +98,28 @@ const Precificacao = () => {
   const lucroPrev = totais.venda - custoTotalReal;
   const margemMedia = totais.venda > 0 ? (lucroPrev / totais.venda) * 100 : 0;
 
-  // Custo por fornecedor — despesas de viagem são divididas igualmente
-  // entre todos os itens; cada fornecedor recebe a soma da sua parcela.
+  // Custo por fornecedor — despesas de viagem são rateadas por unidade
+  // (despesa total ÷ total de unidades). Cada fornecedor recebe a soma
+  // proporcional à quantidade de unidades que fornece.
+  const despesaPorUnidade = totais.qtd > 0 ? totalDespesas / totais.qtd : 0;
   const custoPorFornecedor = (() => {
-    const totalItens = items.length;
-    const despesaPorItem = totalItens > 0 ? totalDespesas / totalItens : 0;
-    const map = new Map<string, { custoItens: number; qtdItens: number }>();
+    const map = new Map<string, { custoItens: number; qtdItens: number; qtdUnidades: number }>();
     items.forEach((it) => {
       const key = it.fornecedor || "Sem fornecedor";
-      const cur = map.get(key) ?? { custoItens: 0, qtdItens: 0 };
+      const cur = map.get(key) ?? { custoItens: 0, qtdItens: 0, qtdUnidades: 0 };
       cur.custoItens += calcTotal(it);
       cur.qtdItens += 1;
+      cur.qtdUnidades += it.qtd;
       map.set(key, cur);
     });
     return Array.from(map.entries())
       .map(([fornecedor, v]) => ({
         fornecedor,
         qtdItens: v.qtdItens,
+        qtdUnidades: v.qtdUnidades,
         custoItens: v.custoItens,
-        despesasRateio: despesaPorItem * v.qtdItens,
-        custoTotal: v.custoItens + despesaPorItem * v.qtdItens,
+        despesasRateio: despesaPorUnidade * v.qtdUnidades,
+        custoTotal: v.custoItens + despesaPorUnidade * v.qtdUnidades,
       }))
       .sort((a, b) => b.custoTotal - a.custoTotal);
   })();
