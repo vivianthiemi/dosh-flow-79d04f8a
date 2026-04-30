@@ -194,9 +194,9 @@ const Precificacao = () => {
                       </TableCell>
                       <TableCell>
                         <Input
-                          value={it.linha}
-                          placeholder="Linha / marca"
-                          onChange={(e) => updateItem(it.id, "linha", e.target.value)}
+                          value={it.marca}
+                          placeholder="Marca"
+                          onChange={(e) => updateItem(it.id, "marca", e.target.value)}
                           className="h-9"
                         />
                       </TableCell>
