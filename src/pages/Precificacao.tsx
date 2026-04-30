@@ -634,8 +634,8 @@ const Precificacao = () => {
         </section>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={addItem}>
-            <Plus className="mr-1 h-4 w-4" /> Adicionar item
+          <Button variant="outline" onClick={addFornecedor}>
+            <Plus className="mr-1 h-4 w-4" /> Novo fornecedor
           </Button>
           <Button>Salvar cotação</Button>
         </div>
