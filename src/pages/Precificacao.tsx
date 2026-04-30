@@ -158,9 +158,9 @@ const Precificacao = () => {
                   <TableHead className="text-center">Qtd.</TableHead>
                   <TableHead className="text-center">Qtd. / Box</TableHead>
                   <TableHead className="text-right">R$ Un.</TableHead>
+                  <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="text-center">Margem</TableHead>
                   <TableHead className="text-right">R$ Venda</TableHead>
-                  <TableHead className="text-right">R$ Total</TableHead>
                   <TableHead className="w-12" />
                 </TableRow>
               </TableHeader>
