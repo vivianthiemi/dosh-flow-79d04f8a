@@ -76,12 +76,14 @@ const Precificacao = () => {
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
 
-  const calcTotal = (it: CotacaoItem) => it.qtd * it.valorUnit;
+  // Qtd. = nº de caixas; QtdBox = unidades por caixa
+  const calcUnidades = (it: CotacaoItem) => it.qtd * it.qtdBox;
+  const calcTotal = (it: CotacaoItem) => calcUnidades(it) * it.valorUnit;
 
   // Despesas precisam ser conhecidas antes para entrar no custo real por unidade
   const totalDespesas =
     despesas.combustivel + despesas.alimentacao + despesas.estacionamento + despesas.pedagio;
-  const totalUnidades = items.reduce((s, it) => s + it.qtd, 0);
+  const totalUnidades = items.reduce((s, it) => s + calcUnidades(it), 0);
   const despesaPorUnidade = totalUnidades > 0 ? totalDespesas / totalUnidades : 0;
 
   // Custo real por unidade já inclui o rateio das despesas
@@ -91,11 +93,10 @@ const Precificacao = () => {
 
   const totais = items.reduce(
     (acc, it) => {
-      const total = calcTotal(it);
-      const totalVenda = calcVenda(it) * it.qtd;
-      acc.qtd += it.qtd;
-      acc.custo += total;
-      acc.venda += totalVenda;
+      const unidades = calcUnidades(it);
+      acc.qtd += unidades;
+      acc.custo += unidades * it.valorUnit;
+      acc.venda += calcVenda(it) * unidades;
       return acc;
     },
     { qtd: 0, custo: 0, venda: 0 },
