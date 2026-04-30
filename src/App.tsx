@@ -11,6 +11,7 @@ import ProdutoMockup from "./pages/ProdutoMockup.tsx";
 import Loja from "./pages/Loja.tsx";
 import Login from "./pages/Login.tsx";
 import Perfis from "./pages/Perfis.tsx";
+import Precificacao from "./pages/Precificacao.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
