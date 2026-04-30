@@ -255,9 +255,21 @@ const Precificacao = () => {
                           type="number"
                           min={0}
                           step="0.01"
-                          value={it.valorUnit}
+                          value={Number((it.valorUnit * it.qtdBox).toFixed(2))}
+                          onChange={(e) => updateValorCaixa(it.id, Number(e.target.value) || 0)}
+                          className="h-9 w-24 text-right"
+                          placeholder="0,00"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          value={Number(it.valorUnit.toFixed(4))}
                           onChange={(e) => updateItem(it.id, "valorUnit", Number(e.target.value) || 0)}
                           className="h-9 w-24 text-right"
+                          placeholder="0,00"
                         />
                       </TableCell>
                       <TableCell className="text-right font-semibold">
