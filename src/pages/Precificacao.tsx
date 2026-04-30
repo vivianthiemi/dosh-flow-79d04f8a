@@ -336,6 +336,7 @@ const Precificacao = () => {
                       <TableCell />
                       <TableCell className="text-center font-bold tabular-nums">{totais.qtd}</TableCell>
                       <TableCell />
+                      <TableCell />
                       <TableCell className="text-right font-bold">
                         {formatCurrency(totais.custo)}
                       </TableCell>
