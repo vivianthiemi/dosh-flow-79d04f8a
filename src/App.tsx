@@ -12,6 +12,7 @@ import Loja from "./pages/Loja.tsx";
 import Login from "./pages/Login.tsx";
 import Perfis from "./pages/Perfis.tsx";
 import Precificacao from "./pages/Precificacao.tsx";
+import TurnosHistorico from "./pages/TurnosHistorico.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/perfis" element={<Perfis />} />
           <Route path="/precificacao" element={<Precificacao />} />
+          <Route path="/turnos-historico" element={<TurnosHistorico />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
