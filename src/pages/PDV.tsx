@@ -270,6 +270,36 @@ export default function PDV() {
       <div className="grid gap-4 p-4 lg:grid-cols-[1fr_360px]">
         {/* Coluna principal */}
         <div className="space-y-3">
+          {/* Modo escaneamento */}
+          {scanMode && (
+            <div className="flex items-center gap-3 rounded-lg border-2 border-emerald-500/60 bg-emerald-50 px-4 py-3 shadow-sm">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-primary-foreground">
+                <ScanLine className="h-5 w-5" />
+                <span className="absolute inset-0 animate-ping rounded-full bg-emerald-500/40" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-emerald-900">
+                  Modo escaneamento ativo
+                </p>
+                <p className="text-xs text-emerald-800/80">
+                  {lastScan
+                    ? lastScan.ok
+                      ? `Último: ${lastScan.sku} · ${lastScan.nome}`
+                      : `SKU não encontrado: ${lastScan.sku}`
+                    : "Aponte o leitor para o código de barras…"}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setScanMode(false)}
+                className="gap-2"
+              >
+                <X className="h-4 w-4" /> Sair
+              </Button>
+            </div>
+          )}
+
           {/* Busca */}
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
