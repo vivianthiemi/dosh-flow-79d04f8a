@@ -113,9 +113,68 @@ export default function PDV() {
       }
       return [...curr, { ...p, qtd: 1 }];
     });
-    buscaRef.current?.focus();
-    buscaRef.current?.select();
+    if (!scanMode) {
+      buscaRef.current?.focus();
+      buscaRef.current?.select();
+    }
   };
+
+  // Modo escaneamento: captura globalmente o input do leitor (USB/teclado)
+  // e ao receber Enter procura o SKU exato e adiciona ao carrinho.
+  useEffect(() => {
+    if (!scanMode) return;
+    buscaRef.current?.blur();
+
+    const resetBuffer = () => {
+      scanBufferRef.current = "";
+      if (scanTimerRef.current) window.clearTimeout(scanTimerRef.current);
+      scanTimerRef.current = null;
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      // Ignora teclas de função / atalhos já tratados
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "F2" || e.key === "F4" || e.key === "Escape") return;
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const code = scanBufferRef.current.trim();
+        resetBuffer();
+        if (!code) return;
+        const p = MOCK_PRODUTOS.find(
+          (x) => x.sku.toLowerCase() === code.toLowerCase(),
+        );
+        if (p) {
+          adicionarItem(p);
+          setLastScan({ sku: p.sku, nome: p.nome, ok: true });
+          toast.success(`Adicionado: ${p.nome}`, { description: `SKU ${p.sku}` });
+        } else {
+          setLastScan({ sku: code, nome: "Produto não encontrado", ok: false });
+          toast.error(`SKU não encontrado: ${code}`);
+        }
+        return;
+      }
+
+      if (e.key.length === 1) {
+        // Evita digitar em outros campos enquanto o modo está ativo
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+          target.blur();
+        }
+        e.preventDefault();
+        scanBufferRef.current += e.key;
+        if (scanTimerRef.current) window.clearTimeout(scanTimerRef.current);
+        // Reseta buffer se ficar inativo por >300ms (digitação humana)
+        scanTimerRef.current = window.setTimeout(resetBuffer, 300);
+      }
+    };
+
+    window.addEventListener("keydown", onKey, true);
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      resetBuffer();
+    };
+  }, [scanMode]);
 
   const alterarQtd = (id: string, delta: number) => {
     setItens((curr) =>
