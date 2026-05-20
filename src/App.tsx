@@ -14,6 +14,7 @@ import Perfis from "./pages/Perfis.tsx";
 import Precificacao from "./pages/Precificacao.tsx";
 import TurnosHistorico from "./pages/TurnosHistorico.tsx";
 import PDV from "./pages/PDV.tsx";
+import Compras from "./pages/Compras.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
