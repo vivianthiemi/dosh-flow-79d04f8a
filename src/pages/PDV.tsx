@@ -233,6 +233,19 @@ export default function PDV() {
             <Badge className="bg-emerald-600 hover:bg-emerald-600">
               Turno aberto · {totalItens} vendas
             </Badge>
+            <Button
+              variant={scanMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => setScanMode((v) => !v)}
+              className={cn(
+                "gap-2",
+                scanMode && "bg-emerald-600 text-primary-foreground hover:bg-emerald-700",
+              )}
+              aria-pressed={scanMode}
+            >
+              <ScanBarcode className="h-4 w-4" />
+              {scanMode ? "Escaneando" : "Escanear"}
+            </Button>
             <Button variant="outline" size="sm" className="gap-2">
               <DoorClosed className="h-4 w-4" /> Fechar Turno
             </Button>
