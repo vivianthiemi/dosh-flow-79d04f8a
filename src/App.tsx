@@ -14,6 +14,7 @@ import Perfis from "./pages/Perfis.tsx";
 import Precificacao from "./pages/Precificacao.tsx";
 import TurnosHistorico from "./pages/TurnosHistorico.tsx";
 import PDV from "./pages/PDV.tsx";
+import Compras from "./pages/Compras.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/precificacao" element={<Precificacao />} />
           <Route path="/turnos-historico" element={<TurnosHistorico />} />
           <Route path="/pdv" element={<PDV />} />
+          <Route path="/compras" element={<Compras />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
