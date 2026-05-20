@@ -14,7 +14,10 @@ import {
   Sparkles,
   X,
   ArrowUpDown,
+  ScanLine,
+  ScanBarcode,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,8 +53,12 @@ export default function PDV() {
   const [itens, setItens] = useState<ItemVenda[]>([]);
   const [descontoTipo, setDescontoTipo] = useState<"%" | "$">("%");
   const [desconto, setDesconto] = useState(0);
+  const [scanMode, setScanMode] = useState(false);
+  const [lastScan, setLastScan] = useState<{ sku: string; nome: string; ok: boolean } | null>(null);
   const buscaRef = useRef<HTMLInputElement>(null);
   const listaRef = useRef<HTMLDivElement>(null);
+  const scanBufferRef = useRef("");
+  const scanTimerRef = useRef<number | null>(null);
 
   const resultados = useMemo(() => {
     const q = busca.trim().toLowerCase();
@@ -106,9 +113,68 @@ export default function PDV() {
       }
       return [...curr, { ...p, qtd: 1 }];
     });
-    buscaRef.current?.focus();
-    buscaRef.current?.select();
+    if (!scanMode) {
+      buscaRef.current?.focus();
+      buscaRef.current?.select();
+    }
   };
+
+  // Modo escaneamento: captura globalmente o input do leitor (USB/teclado)
+  // e ao receber Enter procura o SKU exato e adiciona ao carrinho.
+  useEffect(() => {
+    if (!scanMode) return;
+    buscaRef.current?.blur();
+
+    const resetBuffer = () => {
+      scanBufferRef.current = "";
+      if (scanTimerRef.current) window.clearTimeout(scanTimerRef.current);
+      scanTimerRef.current = null;
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      // Ignora teclas de função / atalhos já tratados
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "F2" || e.key === "F4" || e.key === "Escape") return;
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const code = scanBufferRef.current.trim();
+        resetBuffer();
+        if (!code) return;
+        const p = MOCK_PRODUTOS.find(
+          (x) => x.sku.toLowerCase() === code.toLowerCase(),
+        );
+        if (p) {
+          adicionarItem(p);
+          setLastScan({ sku: p.sku, nome: p.nome, ok: true });
+          toast.success(`Adicionado: ${p.nome}`, { description: `SKU ${p.sku}` });
+        } else {
+          setLastScan({ sku: code, nome: "Produto não encontrado", ok: false });
+          toast.error(`SKU não encontrado: ${code}`);
+        }
+        return;
+      }
+
+      if (e.key.length === 1) {
+        // Evita digitar em outros campos enquanto o modo está ativo
+        const target = e.target as HTMLElement | null;
+        if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA")) {
+          target.blur();
+        }
+        e.preventDefault();
+        scanBufferRef.current += e.key;
+        if (scanTimerRef.current) window.clearTimeout(scanTimerRef.current);
+        // Reseta buffer se ficar inativo por >300ms (digitação humana)
+        scanTimerRef.current = window.setTimeout(resetBuffer, 300);
+      }
+    };
+
+    window.addEventListener("keydown", onKey, true);
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      resetBuffer();
+    };
+  }, [scanMode]);
 
   const alterarQtd = (id: string, delta: number) => {
     setItens((curr) =>
@@ -167,6 +233,19 @@ export default function PDV() {
             <Badge className="bg-emerald-600 hover:bg-emerald-600">
               Turno aberto · {totalItens} vendas
             </Badge>
+            <Button
+              variant={scanMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => setScanMode((v) => !v)}
+              className={cn(
+                "gap-2",
+                scanMode && "bg-emerald-600 text-primary-foreground hover:bg-emerald-700",
+              )}
+              aria-pressed={scanMode}
+            >
+              <ScanBarcode className="h-4 w-4" />
+              {scanMode ? "Escaneando" : "Escanear"}
+            </Button>
             <Button variant="outline" size="sm" className="gap-2">
               <DoorClosed className="h-4 w-4" /> Fechar Turno
             </Button>
@@ -191,6 +270,36 @@ export default function PDV() {
       <div className="grid gap-4 p-4 lg:grid-cols-[1fr_360px]">
         {/* Coluna principal */}
         <div className="space-y-3">
+          {/* Modo escaneamento */}
+          {scanMode && (
+            <div className="flex items-center gap-3 rounded-lg border-2 border-emerald-500/60 bg-emerald-50 px-4 py-3 shadow-sm">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-primary-foreground">
+                <ScanLine className="h-5 w-5" />
+                <span className="absolute inset-0 animate-ping rounded-full bg-emerald-500/40" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-emerald-900">
+                  Modo escaneamento ativo
+                </p>
+                <p className="text-xs text-emerald-800/80">
+                  {lastScan
+                    ? lastScan.ok
+                      ? `Último: ${lastScan.sku} · ${lastScan.nome}`
+                      : `SKU não encontrado: ${lastScan.sku}`
+                    : "Aponte o leitor para o código de barras…"}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setScanMode(false)}
+                className="gap-2"
+              >
+                <X className="h-4 w-4" /> Sair
+              </Button>
+            </div>
+          )}
+
           {/* Busca */}
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
