@@ -53,8 +53,12 @@ export default function PDV() {
   const [itens, setItens] = useState<ItemVenda[]>([]);
   const [descontoTipo, setDescontoTipo] = useState<"%" | "$">("%");
   const [desconto, setDesconto] = useState(0);
+  const [scanMode, setScanMode] = useState(false);
+  const [lastScan, setLastScan] = useState<{ sku: string; nome: string; ok: boolean } | null>(null);
   const buscaRef = useRef<HTMLInputElement>(null);
   const listaRef = useRef<HTMLDivElement>(null);
+  const scanBufferRef = useRef("");
+  const scanTimerRef = useRef<number | null>(null);
 
   const resultados = useMemo(() => {
     const q = busca.trim().toLowerCase();
